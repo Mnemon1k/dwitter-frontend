@@ -1,0 +1,13 @@
+.nav-logo {
+    display: flex;
+    align-items: center;
+}
+
+.nav-logo svg {
+    margin-right: 5px;
+}
+
+.menu a {
+    color: #fff;
+    text-decoration: none;
+}
