@@ -1,6 +1,6 @@
 function UserPage() {
 	return (
-		<div>
+		<div data-testid={"userpage"}>
 			<h1>User page</h1>
 		</div>
 	);

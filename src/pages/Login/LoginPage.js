@@ -1,25 +1,28 @@
 import {Container, Stack, TextField} from "@mui/material";
-import Menu from "../../Menu/Menu";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {useState} from "react";
 import {Alert} from "@mui/lab";
+import {useNavigate} from "react-router-dom";
+import {connect} from "react-redux";
+import {loginHandler} from "../../redux/authActions";
 
-const LoginPage = (props) => {
+const LoginPage = ({actions}) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [apiError, setApiError] = useState(null);
 	const [loginPending, setLoginPending] = useState(false);
+	const navigate = useNavigate();
 
 	const formSubmit = () => {
 		setLoginPending(true);
 		setApiError(null);
-		props.actions.postLogin({
+		actions.postLogin({
 			username,
 			password
 		})
-			.then((data) => {
-
+			.then((response) => {
+				navigate("/");
 			})
 			.catch((error) => {
 				setApiError(error?.response?.data?.message);
@@ -30,7 +33,7 @@ const LoginPage = (props) => {
 	};
 
 	return (
-		<Container maxWidth="xs" className="full-height-centered">
+		<Container data-testid={"loginpage"} maxWidth="xs" className="full-height-centered">
 			<Stack spacing={2} alignItems={"center"} width="100%">
 				<CenterFocusStrongIcon className={"logo"}/>
 
@@ -78,4 +81,20 @@ const LoginPage = (props) => {
 	);
 };
 
-export default LoginPage;
+LoginPage.defaultProps = {
+	actions: {
+		postLogin: () => new Promise((resolve, reject) => resolve({}))
+	},
+	dispaatch: () => {
+	}
+}
+
+const mapDispatchToProps = (dispatch) => {
+	return {
+		actions: {
+			postLogin: (body) => dispatch(loginHandler(body))
+		}
+	};
+}
+
+export default connect(null, mapDispatchToProps)(LoginPage);
