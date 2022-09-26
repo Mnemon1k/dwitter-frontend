@@ -7,7 +7,7 @@ import {useNavigate} from "react-router-dom";
 import {connect} from "react-redux";
 import {signupHandler} from "../../redux/authActions";
 
-function SignupPage({actions, dispatch}) {
+export function SignupPage({actions}) {
 	const [displayName, setDisplayName] = useState("");
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");

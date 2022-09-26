@@ -2,12 +2,12 @@ import {Container, Stack, TextField} from "@mui/material";
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {useState} from "react";
-import {Alert} from "@mui/lab";
+import {Alert} from '@mui/material';
 import {useNavigate} from "react-router-dom";
 import {connect} from "react-redux";
 import {loginHandler} from "../../redux/authActions";
 
-const LoginPage = ({actions}) => {
+export const LoginPage = ({actions, dispatch}) => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [apiError, setApiError] = useState(null);
@@ -75,7 +75,7 @@ const LoginPage = ({actions}) => {
 					Login
 				</LoadingButton>
 
-				{apiError && <Alert severity="error">{apiError}</Alert>}
+				{apiError && <Alert data-testid={"login-error"} severity="error">{apiError}</Alert>}
 			</Stack>
 		</Container>
 	);
@@ -85,7 +85,7 @@ LoginPage.defaultProps = {
 	actions: {
 		postLogin: () => new Promise((resolve, reject) => resolve({}))
 	},
-	dispaatch: () => {
+	dispatch: () => {
 	}
 }
 

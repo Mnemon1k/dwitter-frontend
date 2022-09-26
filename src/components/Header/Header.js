@@ -25,7 +25,7 @@ function Header({user, dispatch}) {
 					<Button onClick={onClickLogout} sx={{color: "#fff"}}>
 						Logout
 					</Button>
-					<MenuLink data-testid={"qwe"} color={"#fff"} to={"/" + user.username}>My profile</MenuLink>
+					<MenuLink data-testid={"profile-link"} color={"#fff"} to={"/" + user.username}>My profile</MenuLink>
 				</>
 			);
 

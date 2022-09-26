@@ -16,19 +16,20 @@ export let initialState = {
 const configureStore = (addLogger = true) => {
 	let store;
 	let localStorageData = localStorage.getItem("dwitter-auth");
+	let state = initialState;
 
 	if (localStorageData) {
 		try {
-			initialState = JSON.parse(localStorageData);
+			state = JSON.parse(localStorageData);
 			setAuthorizationHeader(initialState);
 		} catch (e) {
 		}
 	}
 
 	if (addLogger) {
-		store = createStore(authReducer, initialState, applyMiddleware(thunk, logger))
+		store = createStore(authReducer, state, applyMiddleware(thunk, logger))
 	} else {
-		store = createStore(authReducer, initialState, applyMiddleware(thunk))
+		store = createStore(authReducer, state, applyMiddleware(thunk))
 	}
 
 	store.subscribe(() => {

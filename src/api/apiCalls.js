@@ -1,14 +1,23 @@
 import axios from "axios";
 
-export const login = (credentials) => {
-	return axios.post('/api/1.0/login', {}, {
+export const BASE_PATH = "/api/1.0";
+
+export let login = (credentials) => {
+	return axios.post(BASE_PATH + '/login', {}, {
 		auth: credentials
 	});
 }
 
-export const signup = (user) => {
-	return axios.post('/api/1.0/users', user);
+export let signup = (user) => {
+	return axios.post(BASE_PATH + '/users', user);
 };
+
+export let getUsers = (params) => {
+	const defaultPage = 0;
+	const defaultPageSize = 3;
+	return axios.get(BASE_PATH + `/users?page=${params?.page || defaultPage}&size=${params?.size || defaultPageSize}`);
+};
+
 
 export const setAuthorizationHeader = ({username, password, isLoggedIn}) => {
 	if (isLoggedIn) {

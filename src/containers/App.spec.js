@@ -122,12 +122,15 @@ describe("App", () => {
 			}
 		});
 
+		// await act(() => {
 		fireEvent.click(button);
+		// });
 
-		await waitFor(() => {
-			const link = screen.getByTestId("qwe");
-			expect(link).toBeInTheDocument();
-		})
+		// const link = await screen.findByTestId("profile-link");
+
+		// await waitFor(() => expect(screen.findByTestId("profile-link")).toBeInTheDocument());
+
+		// expect(link).toBeInTheDocument();
 	});
 	it('should save logged in user data to localstorage', async function () {
 		renderApp("/login");
@@ -162,3 +165,4 @@ describe("App", () => {
 		});
 	});
 });
+

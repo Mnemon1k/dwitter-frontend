@@ -1,12 +1,5 @@
-import {fireEvent, render, screen, waitForElementToBeRemoved} from "@testing-library/react";
-import LoginPage from "./LoginPage";
-import {BrowserRouter, MemoryRouter, Route, Routes} from "react-router-dom";
-import SignupPage from "../Signup/SignupPage";
-import Header from "../../Menu/Header";
-import {Provider} from "react-redux";
-import {createStore} from "redux";
-import authReducer from "../../redux/authReducer";
-import configureStore from "../../redux/configureStore";
+import {act, fireEvent, render, screen, waitFor, waitForElementToBeRemoved} from "@testing-library/react";
+import {LoginPage} from "./LoginPage";
 
 const mockedUsedNavigate = jest.fn();
 
@@ -18,13 +11,8 @@ jest.mock('react-router-dom', () => ({
 
 describe("LoginPage", () => {
 	const renderLoginPage = (props) => {
-		const store = configureStore(false);
-
-		render(<Provider store={store}>
-				<MemoryRouter>
-					<LoginPage {...props} />
-				</MemoryRouter>
-			</Provider>
+		render(
+			<LoginPage {...props} />
 		);
 	}
 
@@ -51,7 +39,6 @@ describe("LoginPage", () => {
 	describe("Interactions", () => {
 		const changeEvent = (content) => ({target: {value: content}});
 		let button, username, password;
-
 		const mockAsyncDelayed = () => {
 			return jest.fn().mockImplementation(() => {
 				return new Promise((resolve, reject) => {
@@ -61,7 +48,6 @@ describe("LoginPage", () => {
 				})
 			});
 		};
-
 		const setupForSubmit = (props) => {
 			renderLoginPage(props);
 
@@ -88,7 +74,10 @@ describe("LoginPage", () => {
 			const actions = {postLogin: jest.fn().mockResolvedValueOnce({})};
 
 			setupForSubmit({actions});
-			fireEvent.click(button);
+
+			await act(() => {
+				fireEvent.click(button);
+			});
 
 			const expectedUserObject = {
 				username: "my-username",
@@ -141,7 +130,8 @@ describe("LoginPage", () => {
 			setupForSubmit({actions});
 			fireEvent.click(button);
 
-			const errorMsg = await screen.findByText('Login failed');
+
+			const errorMsg = await screen.findByText("Login failed");
 			fireEvent.change(password, changeEvent("new-password"));
 			expect(errorMsg).not.toBeInTheDocument();
 		});
@@ -171,3 +161,4 @@ describe("LoginPage", () => {
 		});
 	})
 });
+

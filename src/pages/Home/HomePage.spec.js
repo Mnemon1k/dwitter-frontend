@@ -3,10 +3,10 @@ import HomePage from "../Home/HomePage";
 
 describe("HomePage", () => {
 	describe("Layout", () => {
-		it('should have h1', async function () {
+		it('should have homepage test id', async function () {
 			render(<HomePage/>);
-			const heading = screen.getByRole('heading', {level: 1, name: 'Home'});
-			expect(heading).toBeInTheDocument();
+			const page = screen.getByTestId('homepage');
+			expect(page).toBeInTheDocument();
 		});
 	});
 });

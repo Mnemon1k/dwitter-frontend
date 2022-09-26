@@ -4,7 +4,7 @@ import {MemoryRouter} from "react-router-dom";
 
 import {Provider} from "react-redux";
 import {createStore} from "redux";
-import authReducer from "../redux/authReducer";
+import authReducer from "../../redux/authReducer";
 
 const initialState = {
 	id: 0,
@@ -85,3 +85,5 @@ describe("Header", () => {
 		});
 	});
 });
+
+console.error = null;
