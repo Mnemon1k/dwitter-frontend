@@ -1,11 +1,10 @@
-import {fireEvent, render, screen, waitFor} from "@testing-library/react";
+import {act, fireEvent, render, screen, waitFor} from "@testing-library/react";
 import {MemoryRouter} from "react-router-dom";
 import App from "./App";
 
 import {Provider} from "react-redux";
 import axios from "axios";
 import configureStore from "../redux/configureStore";
-
 
 const renderApp = (path) => {
 	const store = configureStore(false);
@@ -77,10 +76,6 @@ describe("App", () => {
 		const username = screen.getByLabelText('Your username');
 		const password = screen.getByLabelText('Your password');
 		const button = screen.getByTestId('login-button');
-
-		fireEvent.change(username, changeEvent(("user1")));
-		fireEvent.change(password, changeEvent(("1Password")));
-
 		axios.post = jest.fn().mockResolvedValue({
 			data: {
 				id: 1,
@@ -90,47 +85,16 @@ describe("App", () => {
 			}
 		});
 
-		fireEvent.click(button);
+		await act(() => {
+			fireEvent.change(username, changeEvent(("user1")));
+			fireEvent.change(password, changeEvent(("1Password")));
+			fireEvent.click(button);
+		});
+
 		await waitFor(() => {
 			const link = screen.getByText("My profile");
 			expect(link).toBeInTheDocument();
 		})
-	});
-	it('should display profile link on header after signup success', async function () {
-		renderApp("/signup");
-
-		const displayName = screen.getByLabelText("Your display name");
-		const username = screen.getByLabelText('Your username');
-		const password = screen.getByLabelText('Repeat your password');
-		const passwordRepeat = screen.getByLabelText('Your password');
-		const button = screen.getByTestId('signup-button');
-		fireEvent.change(displayName, changeEvent(("User Name")));
-		fireEvent.change(username, changeEvent(("user12")));
-		fireEvent.change(password, changeEvent(("1Password")));
-		fireEvent.change(passwordRepeat, changeEvent(("1Password")));
-		axios.post = jest.fn().mockResolvedValueOnce({
-			data: {
-				message: "User saved"
-			}
-		});
-		axios.post = jest.fn().mockResolvedValueOnce({
-			data: {
-				id: 1,
-				username: "user1",
-				displayName: "display1",
-				image: "href"
-			}
-		});
-
-		// await act(() => {
-		fireEvent.click(button);
-		// });
-
-		// const link = await screen.findByTestId("profile-link");
-
-		// await waitFor(() => expect(screen.findByTestId("profile-link")).toBeInTheDocument());
-
-		// expect(link).toBeInTheDocument();
 	});
 	it('should save logged in user data to localstorage', async function () {
 		renderApp("/login");

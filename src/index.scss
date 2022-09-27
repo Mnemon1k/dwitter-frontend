@@ -28,6 +28,10 @@ a {
 * Helpers
 */
 
+.text-center {
+  text-align: center;
+}
+
 .full-height-centered {
   min-height: calc(100vh - 64px);
   display: flex !important;
@@ -46,3 +50,11 @@ a {
   color: #1976d2;
 }
 
+
+.MuiIconButton-root {
+  margin-right: 0 !important;
+}
+
+.MuiPagination-ul {
+  justify-content: center;
+}

@@ -1,9 +1,12 @@
 import UserList from "../../components/UserList/UserList";
+import {Container} from "@mui/material";
 
 function HomePage() {
 	return (
 		<div data-testid={"homepage"}>
-			<UserList/>
+			<Container maxWidth="sm">
+				<UserList/>
+			</Container>
 		</div>
 	);
 }
