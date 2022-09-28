@@ -21,7 +21,7 @@ const configureStore = (addLogger = true) => {
 	if (localStorageData) {
 		try {
 			state = JSON.parse(localStorageData);
-			setAuthorizationHeader(initialState);
+			setAuthorizationHeader(state);
 		} catch (e) {
 		}
 	}

@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {getUser} from "../../api/apiCalls";
+import {getUser, updateUser} from "../../api/apiCalls";
 import {useParams} from "react-router-dom";
 import {Container, Stack, Alert, Typography} from "@mui/material";
 import UserCardSkeleton from "../../components/UserCardSkeleton/UserCardSkeleton";
@@ -11,21 +11,31 @@ function UserPage({loggedInUser}) {
 	const [user, setUser] = useState(undefined);
 	const [userLoading, setUserLoading] = useState(true);
 	const [userLoadingError, setUserLoadingError] = useState(null);
+	const [editMode, setEditMode] = useState(false);
+
+	const toggleEditMode = (e) => {
+		setEditMode(!editMode);
+	}
+
+	const onClickSave = ({displayName}) => {
+		setUserLoading(true);
+		updateUser(user.id, {displayName})
+			.then(() => {
+				setEditMode(false);
+				setUser({...user, displayName});
+			})
+			.catch(e => alert("Error while updating user"))
+			.finally(() => setUserLoading(false));
+	}
 
 	useEffect(() => {
 		if (params.username) {
 			setUserLoading(true);
 			setUserLoadingError(null);
 			getUser(params.username)
-				.then((response) => {
-					setUser(response?.data);
-				})
-				.catch((error) => {
-					setUserLoadingError(error?.response?.data?.message || "Server error");
-				})
-				.finally(() => {
-					setUserLoading(false);
-				});
+				.then(response => setUser(response?.data))
+				.catch(error => setUserLoadingError(error?.response?.data?.message || "Server error"))
+				.finally(() => setUserLoading(false));
 		}
 	}, [params.username]);
 
@@ -38,17 +48,16 @@ function UserPage({loggedInUser}) {
 				<Stack spacing={2} alignItems={"center"} width="100%">
 					{
 						userLoadingError ?
-							<Alert severity="error">
-								{userLoadingError}
-							</Alert>
+							<Alert severity="error"> {userLoadingError} </Alert>
 							:
 							userLoading ?
 								<UserCardSkeleton/>
 								:
-								<UserCard
-									isEditable={loggedInUser.username === user.username}
-									user={user}
-								/>
+								<UserCard editMode={editMode}
+										  onClickSave={onClickSave}
+										  toggleEditMode={toggleEditMode}
+										  isEditable={loggedInUser.username === user.username}
+										  user={user}/>
 					}
 				</Stack>
 			</Container>
