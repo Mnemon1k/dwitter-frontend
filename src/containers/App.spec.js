@@ -35,8 +35,8 @@ describe("App", () => {
 		renderApp("/login");
 		expect(screen.getByTestId("loginpage")).toBeInTheDocument();
 	});
-	it('should display login page when url is /user', function () {
-		renderApp("/user");
+	it('should display user page when url is /users', function () {
+		renderApp("/users/user-1");
 		expect(screen.getByTestId("userpage")).toBeInTheDocument();
 	});
 	it('should display login page when url is /signup', function () {
@@ -55,11 +55,6 @@ describe("App", () => {
 	});
 	it('should display header on "/signup" url', function () {
 		renderApp("/signup");
-		const header = screen.getByTestId("header");
-		expect(header).toBeInTheDocument();
-	});
-	it('should display header on "/user" url', function () {
-		renderApp("/user");
 		const header = screen.getByTestId("header");
 		expect(header).toBeInTheDocument();
 	});

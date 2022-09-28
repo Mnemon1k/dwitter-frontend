@@ -67,7 +67,7 @@ describe("Header", () => {
 			renderHeader(loggedInState);
 			const link = screen.getByText("My profile");
 			expect(link).toBeInTheDocument();
-			expect(link.getAttribute("href")).toBe("/" + loggedInState.username);
+			expect(link.getAttribute("href")).toBe("/users/" + loggedInState.username);
 		});
 	});
 

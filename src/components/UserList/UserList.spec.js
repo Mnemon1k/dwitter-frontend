@@ -1,7 +1,6 @@
 import UserList from "./UserList";
 import {act, fireEvent, render, screen} from "@testing-library/react";
 import * as apiCalls from "../../api/apiCalls";
-import Header from "../Header/Header";
 import {MemoryRouter} from "react-router-dom";
 
 const setup = () => {
@@ -104,10 +103,6 @@ const mockFailResponse = {
 
 describe("UserList", () => {
 	describe("Layout", () => {
-		it('should have header with text "Users"', async function () {
-			setup();
-			expect(await screen.findByText("Users")).toBeInTheDocument();
-		});
 		it('should display displayName when api return users', async function () {
 			apiCalls.getUsers = jest.fn().mockResolvedValue(mockedSuccessGetSinglePage);
 			await act(async () => {
@@ -124,7 +119,7 @@ describe("UserList", () => {
 			});
 			const userItem = await screen.findByText("display-name-1");
 
-			expect(userItem.getAttribute("href")).toBe("/user/user-1");
+			expect(userItem.getAttribute("href")).toBe("/users/user-1");
 		});
 	});
 

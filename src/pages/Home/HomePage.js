@@ -1,13 +1,14 @@
 import UserList from "../../components/UserList/UserList";
-import {Container} from "@mui/material";
+import {Container, Typography} from "@mui/material";
 
 function HomePage() {
 	return (
-		<div data-testid={"homepage"}>
-			<Container maxWidth="sm">
-				<UserList/>
-			</Container>
-		</div>
+		<Container className={"padding-md text-center"} data-testid={"homepage"} maxWidth="sm">
+			<Typography component="h4" variant="h4">
+				Users
+			</Typography>
+			<UserList/>
+		</Container>
 	);
 }
 

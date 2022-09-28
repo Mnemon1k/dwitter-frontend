@@ -18,6 +18,10 @@ export let getUsers = (params) => {
 	return axios.get(BASE_PATH + `/users?page=${params?.page || defaultPage}&size=${params?.size || defaultPageSize}`);
 };
 
+export let getUser = (username) => {
+	return axios.get(BASE_PATH + `/users/${username}`);
+};
+
 
 export const setAuthorizationHeader = ({username, password, isLoggedIn}) => {
 	if (isLoggedIn) {

@@ -2,7 +2,6 @@ import React from 'react';
 import {Avatar, IconButton, ListItem, ListItemAvatar, ListItemText} from "@mui/material";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import ImageIcon from "@mui/icons-material/Image";
 import {Link} from "react-router-dom";
 
 const UserListItem = ({user}) => {
@@ -21,19 +20,15 @@ const UserListItem = ({user}) => {
 			}
 		>
 			<ListItemAvatar>
-				<Avatar>
-					{
-						user?.image
-							?
-							<Avatar src={user?.image}/>
-							:
-							<ImageIcon/>
-					}
-				</Avatar>
+				<Avatar
+					data-testid={"UserImage"}
+					sx={{width: 56, height: 56}}
+					src={user?.image}
+				/>
 			</ListItemAvatar>
 			<ListItemText
 				primary={
-					<Link to={"/user/" + user.username}>{user?.displayName}</Link>
+					<Link to={"/users/" + user.username}>{user?.displayName}</Link>
 				}
 				secondary={user?.username}
 			/>

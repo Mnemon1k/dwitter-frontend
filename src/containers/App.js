@@ -12,7 +12,7 @@ function App() {
 			<Header/>
 			<Routes>
 				<Route path="/" element={<HomePage/>}/>
-				<Route path="/user" element={<UserPage/>}/>
+				<Route path="/users/:username" element={<UserPage/>}/>
 				<Route path="/login" element={<LoginPage/>}/>
 				<Route path="/signup" element={<SignupPage/>}/>
 				<Route path="/404" element={<Page404/>}/>

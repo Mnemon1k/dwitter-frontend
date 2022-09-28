@@ -1,9 +1,13 @@
 import {act, render, screen} from "@testing-library/react";
 import UserListItem from "./UserListItem";
+import Header from "../Header/Header";
+import {MemoryRouter} from "react-router-dom";
 
 const setup = (user) => {
 	render(
-		<UserListItem user={user}/>
+		<MemoryRouter>
+			<UserListItem user={user}/>
+		</MemoryRouter>
 	);
 }
 
@@ -23,7 +27,7 @@ describe("UserListItem", () => {
 		});
 		it('should display default icon when user dont have image', async function () {
 			setup({...user, image: undefined});
-			const image = screen.getByTestId("ImageIcon");
+			const image = screen.getByTestId("UserImage");
 			expect(image).toBeInTheDocument();
 		});
 		it('should display user image when user have it', function () {

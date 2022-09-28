@@ -12,7 +12,7 @@ describe('apiCalls', () => {
 			const path = mockSignup.mock.calls[0][0];
 			expect(path).toBe(BASE_PATH + '/users');
 		});
-	})
+	});
 
 	describe('login', () => {
 		it('should calls /api/1.0/login', function () {
@@ -23,7 +23,7 @@ describe('apiCalls', () => {
 			const path = mockSignup.mock.calls[0][0];
 			expect(path).toBe(BASE_PATH + '/login');
 		});
-	})
+	});
 
 	describe('getUsers', () => {
 		it('should calls /api/1.0/users?page=0&size=3 when no param provided for getUsers', function () {
@@ -58,5 +58,14 @@ describe('apiCalls', () => {
 			const path = mockGetUsers.mock.calls[0][0];
 			expect(path).toBe(BASE_PATH + '/users?page=0&size=10');
 		});
-	})
+	});
+
+	describe("getUser", () => {
+		it('should calls /api/1.0/user/user-5 when user-5 is provided for getUser', function () {
+			const mockGetUser = jest.fn();
+			axios.get = mockGetUser;
+			apiCalls.getUser("user-5")
+			expect(mockGetUser).toBeCalledTimes(1);
+		});
+	});
 });

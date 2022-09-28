@@ -32,6 +32,19 @@ a {
   text-align: center;
 }
 
+.text-left {
+  text-align: left;
+}
+
+.mt-30 {
+  margin-top: 30px;
+}
+
+.padding-md {
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+
 .full-height-centered {
   min-height: calc(100vh - 64px);
   display: flex !important;
@@ -57,4 +70,21 @@ a {
 
 .MuiPagination-ul {
   justify-content: center;
+}
+
+.MuiAvatar-circular {
+  margin-right: 12px;
+}
+
+
+.MuiSkeleton-root {
+  transform: none !important;
+}
+
+.MuiCard-root {
+  width: 100%;
+}
+
+.card-skeleton {
+  min-width: 300px;
 }

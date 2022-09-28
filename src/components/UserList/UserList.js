@@ -5,7 +5,7 @@ import UserListItem from "./UserListItem";
 
 const UserList = () => {
 	const [page, setPage] = useState(0);
-	const [size, setSize] = useState(3);
+	const [size, setSize] = useState(5);
 	const [totalPages, setTotalPages] = useState(0);
 	const [content, setContent] = useState([]);
 	const [requestError, setRequestError] = useState(null);
@@ -57,29 +57,26 @@ const UserList = () => {
 	}, [loadUsers]);
 
 	return (
-		<div className={"text-center"}>
-			<h1>Users</h1>
-			<div>
-				<List dense={true}>
-					{
-						content.map(user => (
-							<UserListItem key={user.id} user={user}/>
-						))
-					}
-				</List>
-				<Pagination
-					onChange={handlePageChange}
-					count={totalPages}
-					page={page + 1}
-					color="primary"
-					disabled={usersLoading}
-				/>
+		<div className={"mt-30"}>
+			<List dense={true}>
 				{
-					requestError
-					&&
-					<Alert severity="error">{requestError}</Alert>
+					content.map(user => (
+						<UserListItem key={user.id} user={user}/>
+					))
 				}
-			</div>
+			</List>
+			<Pagination
+				onChange={handlePageChange}
+				count={totalPages}
+				page={page + 1}
+				color="primary"
+				disabled={usersLoading}
+			/>
+			{
+				requestError
+				&&
+				<Alert severity="error">{requestError}</Alert>
+			}
 		</div>
 	);
 };
