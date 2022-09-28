@@ -10,6 +10,7 @@ function UserPage({loggedInUser}) {
 	const params = useParams();
 	const [user, setUser] = useState(undefined);
 	const [userLoading, setUserLoading] = useState(true);
+	const [userUpdating, setUserUpdating] = useState(false);
 	const [userLoadingError, setUserLoadingError] = useState(null);
 	const [editMode, setEditMode] = useState(false);
 
@@ -18,14 +19,14 @@ function UserPage({loggedInUser}) {
 	}
 
 	const onClickSave = ({displayName}) => {
-		setUserLoading(true);
+		setUserUpdating(true);
 		updateUser(user.id, {displayName})
 			.then(() => {
 				setEditMode(false);
 				setUser({...user, displayName});
 			})
 			.catch(e => alert("Error while updating user"))
-			.finally(() => setUserLoading(false));
+			.finally(() => setUserUpdating(false));
 	}
 
 	useEffect(() => {
@@ -54,6 +55,7 @@ function UserPage({loggedInUser}) {
 								<UserCardSkeleton/>
 								:
 								<UserCard editMode={editMode}
+										  userUpdating={userUpdating}
 										  onClickSave={onClickSave}
 										  toggleEditMode={toggleEditMode}
 										  isEditable={loggedInUser.username === user.username}

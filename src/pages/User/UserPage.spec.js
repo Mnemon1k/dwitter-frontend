@@ -121,7 +121,7 @@ describe("UserPage", () => {
 
 		it('should display edit layout when clicking edit button', async function () {
 			await setupEdit();
-			expect(screen.getByText("Save")).toBeInTheDocument();
+			expect(screen.getByText("Update user")).toBeInTheDocument();
 		});
 		it('should display none edit layout when clicking cancel button', async function () {
 			await setupEdit();
@@ -131,13 +131,13 @@ describe("UserPage", () => {
 		it('should call udpateUserApi when clicking save', async function () {
 			await setupEdit();
 			apiCalls.updateUser = jest.fn().mockResolvedValue(mockSuccessUpdateUser);
-			fireEvent.click(screen.getByText("Save"));
+			fireEvent.click(screen.getByText("Update user"));
 			expect(apiCalls.updateUser).toBeCalledTimes(1);
 		});
 		it('should call udpateUserApi with user id', async function () {
 			await setupEdit();
 			apiCalls.updateUser = jest.fn().mockResolvedValue(mockSuccessUpdateUser);
-			fireEvent.click(screen.getByText("Save"));
+			fireEvent.click(screen.getByText("Update user"));
 			const userId = apiCalls.updateUser.mock.calls[0][0];
 			const data = apiCalls.updateUser.mock.calls[0][1];
 			expect(userId).toBe(1);
@@ -150,9 +150,19 @@ describe("UserPage", () => {
 				{target: {value: "new-display-name"}}
 			);
 
-			fireEvent.click(screen.getByText("Save"));
+			fireEvent.click(screen.getByText("Update user"));
 			const data = apiCalls.updateUser.mock.calls[0][1];
 			expect(data.displayName).toBe('new-display-name');
+		});
+		it('should not modify display name if input value was changed dut clicked cancel button', async function () {
+			await setupEdit();
+
+			fireEvent.change(screen.getByLabelText('New display name'),
+				{target: {value: "new-display-name"}}
+			);
+
+			fireEvent.click(screen.getByText("Cancel"));
+			expect(screen.getByText("user-1")).toBeInTheDocument();
 		});
 	})
 });

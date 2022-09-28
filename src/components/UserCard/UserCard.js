@@ -3,8 +3,9 @@ import {Avatar, Card, CardContent, Stack, TextField} from "@mui/material";
 import Button from "@mui/material/Button";
 import {CancelSharp, Edit, Save} from "@mui/icons-material";
 import UserCardInfo from "../UserCardInfo/UserCardInfo";
+import LoadingButton from "@mui/lab/LoadingButton";
 
-const UserCard = ({user, isEditable, editMode, toggleEditMode, onClickSave}) => {
+const UserCard = ({user, isEditable, editMode, toggleEditMode, onClickSave, userUpdating}) => {
 	const [newName, setNewName] = useState("");
 
 	useEffect(() => setNewName(user.displayName), [editMode, user.displayName]);
@@ -23,11 +24,17 @@ const UserCard = ({user, isEditable, editMode, toggleEditMode, onClickSave}) => 
 		<Stack style={{marginTop: 10}}
 			   spacing={2}
 			   direction="row">
-			<Button variant="contained"
-					color={"success"}
-					size={"small"}
-					onClick={() => onClickSave({displayName: newName})}
-					startIcon={<Save/>}>Save</Button>
+			<LoadingButton
+				onClick={() => onClickSave({displayName: newName})}
+				loading={userUpdating}
+				variant="contained"
+				color={"success"}
+				size={"small"}
+				loadingIndicator="Loading…"
+			>
+				Update user
+			</LoadingButton>
+
 			<Button variant="outlined"
 					color={"error"}
 					size={"small"}
@@ -49,7 +56,7 @@ const UserCard = ({user, isEditable, editMode, toggleEditMode, onClickSave}) => 
 
 			<CardContent className={"text-left"} sx={{flex: 1}}>
 				{editMode ? <EditForm/> : <UserCardInfo user={user}/>}
-				
+
 				{(isEditable && !editMode) &&
 					<Button style={{marginTop: 10}}
 							variant="contained"

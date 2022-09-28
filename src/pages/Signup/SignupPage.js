@@ -33,9 +33,7 @@ export function SignupPage({actions}) {
 					setValidationErrors(response.data.validationErrors);
 				}
 			})
-			.finally(() => {
-				setSingupPending(false);
-			});
+			.finally(() => setSingupPending(false));
 	};
 
 	return (
