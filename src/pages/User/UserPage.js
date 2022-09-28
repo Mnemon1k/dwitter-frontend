@@ -4,8 +4,9 @@ import {useParams} from "react-router-dom";
 import {Container, Stack, Alert, Typography} from "@mui/material";
 import UserCardSkeleton from "../../components/UserCardSkeleton/UserCardSkeleton";
 import UserCard from "../../components/UserCard/UserCard";
+import {connect} from "react-redux";
 
-function UserPage() {
+function UserPage({loggedInUser}) {
 	const params = useParams();
 	const [user, setUser] = useState(undefined);
 	const [userLoading, setUserLoading] = useState(true);
@@ -44,7 +45,10 @@ function UserPage() {
 							userLoading ?
 								<UserCardSkeleton/>
 								:
-								<UserCard user={user}/>
+								<UserCard
+									isEditable={loggedInUser.username === user.username}
+									user={user}
+								/>
 					}
 				</Stack>
 			</Container>
@@ -52,4 +56,10 @@ function UserPage() {
 	);
 }
 
-export default UserPage;
+const mapStateToProps = (state) => {
+	return {
+		loggedInUser: state
+	}
+}
+
+export default connect(mapStateToProps)(UserPage);

@@ -1,7 +1,9 @@
 import React from 'react';
 import {Avatar, Card, CardContent, Typography} from "@mui/material";
+import Button from "@mui/material/Button";
+import {Edit} from "@mui/icons-material";
 
-const UserCard = ({user}) => (
+const UserCard = ({user, isEditable}) => (
 	<Card sx={{display: {xs: "block", sm: 'flex'}}}>
 		<Avatar
 			variant={"square"}
@@ -23,6 +25,11 @@ const UserCard = ({user}) => (
 			<Typography variant="subtitle1" color="text.secondary">
 				Id: <span>{user?.id}</span>
 			</Typography>
+			{
+				isEditable &&
+				<Button style={{marginTop: 10}} variant="contained" color={"primary"} size={"small"}
+						startIcon={<Edit/>}>Edit</Button>
+			}
 		</CardContent>
 	</Card>
 );

@@ -1,25 +1,30 @@
 import axios from "axios";
 
 export const BASE_PATH = "/api/1.0";
+export const USERS_API_PATH = BASE_PATH + "/users";
 
-export let login = (credentials) => {
+export const login = (credentials) => {
 	return axios.post(BASE_PATH + '/login', {}, {
 		auth: credentials
 	});
 }
 
-export let signup = (user) => {
-	return axios.post(BASE_PATH + '/users', user);
+export const signup = (user) => {
+	return axios.post(USERS_API_PATH, user);
 };
 
-export let getUsers = (params) => {
+export const updateUser = (userId, body) => {
+	return axios.put(USERS_API_PATH + '/' + userId, body);
+};
+
+export const getUsers = (params) => {
 	const defaultPage = 0;
 	const defaultPageSize = 3;
-	return axios.get(BASE_PATH + `/users?page=${params?.page || defaultPage}&size=${params?.size || defaultPageSize}`);
+	return axios.get(USERS_API_PATH + `?page=${params?.page || defaultPage}&size=${params?.size || defaultPageSize}`);
 };
 
-export let getUser = (username) => {
-	return axios.get(BASE_PATH + `/users/${username}`);
+export const getUser = (username) => {
+	return axios.get(USERS_API_PATH + `/${username}`);
 };
 
 

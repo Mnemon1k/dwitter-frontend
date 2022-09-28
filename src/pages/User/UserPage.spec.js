@@ -1,7 +1,9 @@
 import {render, screen} from "@testing-library/react";
 import UserPage from "../User/UserPage";
-import {getUser} from "../../api/apiCalls";
 import * as apiCalls from "../../api/apiCalls";
+import configureStore from "../../redux/configureStore";
+import {Provider} from "react-redux";
+import axios from "axios";
 
 const mockSuccessGetUser = {
 	data: {
@@ -24,6 +26,32 @@ jest.mock('react-router-dom', () => ({
 	...jest.requireActual('react-router-dom'),
 	useParams: () => ({username: 'user-1'})
 }));
+
+const setUserOneLoggedInStorage = () => {
+	localStorage.setItem("dwitter-auth",
+		JSON.stringify({
+			id: 1,
+			username: "user-1",
+			displayName: "user-name-1",
+			image: "",
+			password: "Qsada2da",
+			isLoggedInd: true
+		}));
+}
+
+beforeEach(() => {
+	localStorage.clear();
+	delete axios.defaults.headers.common['Authorization'];
+});
+
+const renderUserPage = (path) => {
+	const store = configureStore(false);
+
+	render(
+		<Provider store={store}>
+			<UserPage/>
+		</Provider>);
+}
 
 describe("UserPage", () => {
 	describe("Layout", () => {
@@ -52,6 +80,14 @@ describe("UserPage", () => {
 
 			expect(username).toBeInTheDocument();
 			expect(skeletor).not.toBeInTheDocument();
+		});
+		it('should display edit button when loggedInUser match uesr in url', async function () {
+			setUserOneLoggedInStorage();
+			apiCalls.getUser = jest.fn().mockResolvedValueOnce(mockSuccessGetUser);
+			renderUserPage();
+			await screen.findByText("user-1");
+			const btn = screen.queryByText("Edit");
+			expect(btn).toBeInTheDocument();
 		});
 	});
 

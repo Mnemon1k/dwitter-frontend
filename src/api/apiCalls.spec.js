@@ -61,11 +61,23 @@ describe('apiCalls', () => {
 	});
 
 	describe("getUser", () => {
-		it('should calls /api/1.0/user/user-5 when user-5 is provided for getUser', function () {
+		it('should calls /api/1.0/users/user-5 when user-5 is provided for getUser', function () {
 			const mockGetUser = jest.fn();
 			axios.get = mockGetUser;
 			apiCalls.getUser("user-5")
 			expect(mockGetUser).toBeCalledTimes(1);
+		});
+	});
+
+	describe("updateUser", () => {
+		it('should calls /api/1.0/users/5 when 5 is provided for updateUser', function () {
+			const mockUpdate = jest.fn();
+			const usrIdToUpdate = 5;
+			axios.put = mockUpdate;
+			apiCalls.updateUser(usrIdToUpdate);
+
+			const path = mockUpdate.mock.calls[0][0];
+			expect(path).toBe(BASE_PATH + '/users/' + usrIdToUpdate);
 		});
 	});
 });
