@@ -45,7 +45,7 @@ describe("UserCard", () => {
 		});
 		it('should display save button in editMode', function () {
 			render(<UserCard user={user} editMode={true} isEditable={true}/>);
-			const btn = screen.queryByText("Save");
+			const btn = screen.queryByText("Update user");
 			expect(btn).toBeInTheDocument();
 		});
 		it('should display cancel button in editMode', function () {
@@ -53,8 +53,14 @@ describe("UserCard", () => {
 			const btn = screen.queryByText("Cancel");
 			expect(btn).toBeInTheDocument();
 		});
+		it('should display file input in editMode', function () {
+			render(<UserCard user={user} editMode={true} isEditable={true}/>);
+			const input = screen.queryByTestId("profile-image-input");
+			expect(input).toBeInTheDocument();
+			expect(input.type).toBe("file");
+		});
 	});
-	describe("qwe", () => {
+	describe("", () => {
 
 	});
 });

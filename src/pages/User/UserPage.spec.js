@@ -1,4 +1,4 @@
-import {fireEvent, render, screen} from "@testing-library/react";
+import {findByRole, findByTestId, fireEvent, render, screen, waitFor, within} from "@testing-library/react";
 import UserPage from "../User/UserPage";
 import * as apiCalls from "../../api/apiCalls";
 import configureStore from "../../redux/configureStore";
@@ -40,7 +40,7 @@ const setUserOneLoggedInStorage = () => {
 			id: 1,
 			username: "user-1",
 			displayName: "user-name-1",
-			image: "",
+			image: "user-image.png",
 			password: "Qsada2da",
 			isLoggedInd: true
 		}));
@@ -163,6 +163,32 @@ describe("UserPage", () => {
 
 			fireEvent.click(screen.getByText("Cancel"));
 			expect(screen.getByText("user-1")).toBeInTheDocument();
+		});
+		it('should display selected image in edit mode', async function () {
+			await setupEdit();
+
+			const fileInput = screen.queryByTestId("profile-image-input");
+			const file = new File(['image content'], "example.png", {type: "image/png"});
+
+			fireEvent.change(fileInput, {target: {files: [file]}});
+
+			const profileImageContainer = await screen.findByTestId("UserImage");
+			const image = await within(profileImageContainer).findByRole("img");
+			expect(image.src).toContain('data:image/png;base64');
+
+		});
+		it('should call udpateUserApi with request body and new image without data:image/png;', async function () {
+			await setupEdit();
+			apiCalls.updateUser = jest.fn().mockResolvedValue(mockSuccessUpdateUser);
+
+			const fileInput = screen.queryByTestId("profile-image-input");
+			const file = new File(['image content'], "example.png", {type: "image/png"});
+
+			fireEvent.change(fileInput, {target: {files: [file]}});
+
+			fireEvent.click(screen.getByText("Update user"));
+			const request = apiCalls.updateUser.mock.calls[0][1];
+			// expect(request.image).not.toContain('data:image/png;base64');
 		});
 	})
 });

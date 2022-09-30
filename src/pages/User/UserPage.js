@@ -13,17 +13,35 @@ function UserPage({loggedInUser}) {
 	const [userUpdating, setUserUpdating] = useState(false);
 	const [userLoadingError, setUserLoadingError] = useState(null);
 	const [editMode, setEditMode] = useState(false);
+	const [image, setImage] = useState(null);
 
-	const toggleEditMode = (e) => {
+	const toggleEditMode = () => {
 		setEditMode(!editMode);
+		setImage(null);
 	}
 
-	const onClickSave = ({displayName}) => {
+	const onFileSelect = (event) => {
+		if (event.target.files.length !== 0) {
+			const file = event.target.files[0];
+			let reader = new FileReader();
+			reader.onload = () => {
+				setImage(reader.result);
+			};
+			reader.readAsDataURL(file);
+		}
+	}
+
+	const onClickUpdate = ({displayName}) => {
 		setUserUpdating(true);
-		updateUser(user.id, {displayName})
-			.then(() => {
+		updateUser(user.id,
+			{
+				displayName,
+				image: image && image.split(",")[1]
+			})
+			.then((response) => {
+				console.log(response);
 				setEditMode(false);
-				setUser({...user, displayName});
+				setUser({...user, displayName, image: response.data.image});
 			})
 			.catch(e => alert("Error while updating user"))
 			.finally(() => setUserUpdating(false));
@@ -56,8 +74,10 @@ function UserPage({loggedInUser}) {
 								:
 								<UserCard editMode={editMode}
 										  userUpdating={userUpdating}
-										  onClickSave={onClickSave}
+										  onClickUpdate={onClickUpdate}
 										  toggleEditMode={toggleEditMode}
+										  loaddedImage={image}
+										  onFileSelect={onFileSelect}
 										  isEditable={loggedInUser.username === user.username}
 										  user={user}/>
 					}
