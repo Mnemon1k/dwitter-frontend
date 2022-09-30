@@ -10,6 +10,11 @@ export default function authReducer(state, action) {
 				...action.payload,
 				isLoggedIn: true
 			};
+		case "UPDATE_SUCCESS":
+			return {
+				...state,
+				...action.payload.user
+			}
 
 		default:
 			return state;

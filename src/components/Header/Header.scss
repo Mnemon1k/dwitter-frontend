@@ -23,8 +23,24 @@
 }
 
 .menu {
+  display: flex;
+
+  > * + * {
+    margin-left: 10px;
+  }
+
   a {
     color: #fff;
     text-decoration: none;
+  }
+}
+
+.MuiAvatar-circular {
+  border: 2px solid #ffffff40;
+}
+
+.MuiMenu-list {
+  a {
+    color: #212121;
   }
 }

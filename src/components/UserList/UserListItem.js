@@ -21,6 +21,7 @@ const UserListItem = ({user}) => {
 		>
 			<ListItemAvatar>
 				<Avatar
+					style={{marginRight: 14}}
 					data-testid={"UserImage"}
 					sx={{width: 56, height: 56}}
 					src={user?.image && "/images/profile/" + user?.image}

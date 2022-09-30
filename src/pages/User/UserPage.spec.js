@@ -18,13 +18,23 @@ const mockSuccessUpdateUser = {
 		id: 1,
 		username: 'user-1',
 		displayName: 'user-name-update',
-		image: "updated"
+		image: "image-upd.png"
 	}
 };
 const mockFailGetUser = {
 	response: {
 		data: {
 			message: "user not found"
+		}
+	}
+};
+const mockFailUpdateUser = {
+	response: {
+		data: {
+			validationErrors: {
+				displayName: "Size must be between 6 and 256 characters.",
+				image: "Only PNG and JPG file are allowed"
+			}
 		}
 	}
 };
@@ -46,19 +56,20 @@ const setUserOneLoggedInStorage = () => {
 		}));
 }
 
-beforeEach(() => {
-	localStorage.clear();
-	delete axios.defaults.headers.common['Authorization'];
-});
-
+let store;
 const renderUserPage = (path) => {
-	const store = configureStore(false);
+	store = configureStore(false);
 
 	render(
 		<Provider store={store}>
 			<UserPage/>
 		</Provider>);
 }
+
+beforeEach(() => {
+	localStorage.clear();
+	delete axios.defaults.headers.common['Authorization'];
+});
 
 describe("UserPage", () => {
 	describe("Layout", () => {
@@ -189,6 +200,39 @@ describe("UserPage", () => {
 			fireEvent.click(screen.getByText("Update user"));
 			const request = apiCalls.updateUser.mock.calls[0][1];
 			// expect(request.image).not.toContain('data:image/png;base64');
+		});
+		it('should display validation error for displayName when api fails', async function () {
+			await setupEdit();
+			apiCalls.updateUser = jest.fn().mockRejectedValue(mockFailUpdateUser);
+
+			fireEvent.click(screen.getByText("Update user"));
+
+			expect(
+				await screen.findByText(mockFailUpdateUser.response.data.validationErrors.displayName)
+			).toBeInTheDocument();
+		});
+		it('should display validation error for image when api fails', async function () {
+			await setupEdit();
+			apiCalls.updateUser = jest.fn().mockRejectedValue(mockFailUpdateUser);
+
+			fireEvent.click(screen.getByText("Update user"));
+
+			expect(
+				await screen.findByText(mockFailUpdateUser.response.data.validationErrors.image)
+			).toBeInTheDocument();
+		});
+		it('should update redux state when user update api call success', async function () {
+			await setupEdit();
+			apiCalls.updateUser = jest.fn().mockResolvedValue(mockSuccessUpdateUser);
+			fireEvent.change(screen.getByLabelText('New display name'),
+				{target: {value: mockSuccessUpdateUser.data.displayName}}
+			);
+			fireEvent.click(screen.getByText("Update user"));
+
+			await waitFor(() => {
+				expect(store.getState().image).toBe(mockSuccessUpdateUser.data.image)
+				expect(store.getState().displayName).toBe(mockSuccessUpdateUser.data.displayName)
+			});
 		});
 	})
 });

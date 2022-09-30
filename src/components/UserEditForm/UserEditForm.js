@@ -1,32 +1,39 @@
-import {Stack, TextField} from "@mui/material";
-import LoadingButton from "@mui/lab/LoadingButton";
-import Button from "@mui/material/Button";
-import {CancelSharp} from "@mui/icons-material";
 import {useEffect, useState} from "react";
 
-const UserEditForm = ({user, onFileSelect, onClickUpdate, userUpdating, toggleEditMode}) => {
+import Alert from '@mui/material/Alert'
+import Button from "@mui/material/Button";
+import LoadingButton from "@mui/lab/LoadingButton";
+import {CancelSharp} from "@mui/icons-material";
+import {Stack, TextField} from "@mui/material";
+
+const UserEditForm = ({
+						  user, errors, setErrors, onFileSelect, onClickUpdate, userUpdating, toggleEditMode
+					  }) => {
 	const [newName, setNewName] = useState("");
 
 	useEffect(() => {
 		setNewName(user.displayName);
 	}, [user.displayName]);
-
-
 	return (
 		<Stack spacing={2}>
 			<TextField
 				autoFocus
-				key={"displayName"}
 				size={"small"}
 				value={newName}
+				helperText={errors?.displayName}
+				error={!!errors?.displayName}
 				name="displayName"
-				onChange={e => setNewName(e.target.value)}
+				onChange={event => {
+					setNewName(event.target.value);
+					setErrors({...errors, displayName: ""});
+				}}
 				label="New display name"
 			/>
 			<input data-testid={"profile-image-input"}
 				   multiple={false}
 				   type="file"
 				   onChange={onFileSelect}/>
+			{errors?.image && <Alert severity="error">{errors?.image}</Alert>}
 			<Stack spacing={2}
 				   direction="row">
 				<LoadingButton

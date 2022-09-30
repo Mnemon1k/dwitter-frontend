@@ -63,11 +63,28 @@ describe("Header", () => {
 			const link = screen.getByText("Logout");
 			expect(link).toBeInTheDocument();
 		});
-		it('should have profile link when user logged in', function () {
+		it('should have profile link when user logged in', async function () {
 			renderHeader(loggedInState);
-			const link = screen.getByText("My profile");
+			const link = screen.getByTestId("profile-link");
 			expect(link).toBeInTheDocument();
 			expect(link.getAttribute("href")).toBe("/users/" + loggedInState.username);
+		});
+		it('should display displayName when user is loggen in', async function () {
+			renderHeader(loggedInState);
+			expect(await screen.findByText(loggedInState.displayName)).toBeInTheDocument();
+		});
+		it('should display profile image', function () {
+			renderHeader(loggedInState);
+			expect(screen.getByTestId("header-profile-image")).toBeInTheDocument();
+		});
+		it('should show user dropdown menu on click', async function () {
+			renderHeader(loggedInState);
+
+			const menuButton = screen.getByLabelText("Open menu");
+			fireEvent.click(menuButton);
+
+			const menu = await screen.findByTestId("menu-appbar");
+			expect(menu.className.includes("MuiModal-hidden")).toBeFalsy();
 		});
 	});
 
