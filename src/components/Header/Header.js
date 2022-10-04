@@ -66,7 +66,7 @@ function Header({user, dispatch}) {
 
 	return (
 		<Box sx={{display: 'flex'}}>
-			<AppBar data-testid={"header"} component="nav" className={"header"}>
+			<AppBar elevation={0} data-testid={"header"} component="nav" className={"header"}>
 				<Toolbar>
 					<Typography variant="h6"
 								sx={{flexGrow: 1}}

@@ -80,7 +80,7 @@ function UserPage({loggedInUser, dispatch}) {
 			<Typography component="h4" variant="h4">
 				User info page
 			</Typography>
-			<Container className={"mt-30"} maxWidth={"md"}>
+			<Container className={"mt-20"} maxWidth={"md"}>
 				<Stack spacing={2} alignItems={"center"} width="100%">
 					{
 						userLoadingError ?

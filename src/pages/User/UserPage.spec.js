@@ -1,4 +1,4 @@
-import {findByRole, findByTestId, fireEvent, render, screen, waitFor, within} from "@testing-library/react";
+import {fireEvent, render, screen, waitFor, within} from "@testing-library/react";
 import UserPage from "../User/UserPage";
 import * as apiCalls from "../../api/apiCalls";
 import configureStore from "../../redux/configureStore";
@@ -52,7 +52,7 @@ const setUserOneLoggedInStorage = () => {
 			displayName: "user-name-1",
 			image: "user-image.png",
 			password: "Qsada2da",
-			isLoggedInd: true
+			isLoggedIn: true
 		}));
 }
 

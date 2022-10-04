@@ -1,15 +1,39 @@
 import UserList from "../../components/UserList/UserList";
-import {Container, Typography} from "@mui/material";
+import {Container, Grid, Typography} from "@mui/material";
+import RecordSubmit from "../../components/RecordSubmit/RecordSubmit";
+import {connect} from "react-redux";
 
-function HomePage() {
+function HomePage({user}) {
 	return (
-		<Container className={"padding-md text-center"} data-testid={"homepage"} maxWidth="sm">
-			<Typography component="h4" variant="h4">
-				Users
-			</Typography>
-			<UserList/>
+		<Container className={"padding-md "}
+				   data-testid={"homepage"}
+				   maxWidth="lg">
+			<Grid container
+				  justifyContent={"space-between"}
+				  spacing={4}>
+				<Grid item xs={12} md={7}>
+					{user.isLoggedIn && <RecordSubmit/>}
+				</Grid>
+				<Grid item lg={4} xs={12} md={5}>
+					<Typography component="h5"
+								variant="h5">
+						Users
+					</Typography>
+					<UserList/>
+				</Grid>
+			</Grid>
 		</Container>
 	);
 }
 
-export default HomePage;
+function mapStateToProps(state) {
+	return {user: state};
+}
+
+export default connect(
+	mapStateToProps,
+)(HomePage);
+
+
+
+

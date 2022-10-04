@@ -1,6 +1,6 @@
 import axios from "axios";
 import * as apiCalls from "./apiCalls";
-import {BASE_PATH} from "./apiCalls";
+import {BASE_PATH, RECORDS_API_PATH} from "./apiCalls";
 
 describe('apiCalls', () => {
 	describe('signup', () => {
@@ -78,6 +78,18 @@ describe('apiCalls', () => {
 
 			const path = mockUpdate.mock.calls[0][0];
 			expect(path).toBe(BASE_PATH + '/users/' + usrIdToUpdate);
+		});
+	});
+
+
+	describe('createRecord', () => {
+		it('should calls /api/1.0/records', function () {
+			const mockCreateRecord = jest.fn();
+			axios.post = mockCreateRecord;
+			apiCalls.createRecord({content: "lorem lorem lorem"});
+
+			const path = mockCreateRecord.mock.calls[0][0];
+			expect(path).toBe(RECORDS_API_PATH);
 		});
 	});
 });

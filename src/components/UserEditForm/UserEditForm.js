@@ -41,7 +41,7 @@ const UserEditForm = ({
 					loading={userUpdating}
 					variant="contained"
 					color={"success"}
-					size={"small"}
+					disableElevation
 					loadingIndicator="Loading…"
 				>
 					Update user
@@ -49,7 +49,6 @@ const UserEditForm = ({
 
 				<Button variant="outlined"
 						color={"error"}
-						size={"small"}
 						onClick={toggleEditMode}
 						startIcon={<CancelSharp/>}>Cancel</Button>
 			</Stack>

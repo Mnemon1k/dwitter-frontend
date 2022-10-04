@@ -24,8 +24,8 @@ const UserCard = ({
 					data-testid={"UserImage"}
 					src={loaddedImage ? loaddedImage : user?.image && "/images/profile/" + user?.image}
 					sx={{
-						width: {xs: "100%", sm: 260},
-						height: {xs: "100%", sm: 260}
+						width: {xs: "100%", sm: 290, md: 360},
+						height: {xs: "100%", sm: 290, md: 360}
 					}}
 			/>
 
@@ -45,7 +45,7 @@ const UserCard = ({
 					<Button style={{marginTop: 10}}
 							variant="contained"
 							color={"primary"}
-							size={"small"}
+							disableElevation
 							onClick={toggleEditMode}
 							startIcon={<Edit/>}>Edit</Button>}
 			</CardContent>

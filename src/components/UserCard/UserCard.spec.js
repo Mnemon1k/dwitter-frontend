@@ -1,4 +1,4 @@
-import {getByPlaceholderText, render, screen} from "@testing-library/react";
+import {render, screen} from "@testing-library/react";
 import UserCard from "./UserCard";
 
 const user = {

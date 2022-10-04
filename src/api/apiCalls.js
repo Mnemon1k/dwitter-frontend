@@ -2,6 +2,7 @@ import axios from "axios";
 
 export const BASE_PATH = "/api/1.0";
 export const USERS_API_PATH = BASE_PATH + "/users";
+export const RECORDS_API_PATH = BASE_PATH + "/records";
 
 export const login = (credentials) => {
 	return axios.post(BASE_PATH + '/login', {}, {
@@ -11,6 +12,11 @@ export const login = (credentials) => {
 
 export const signup = (user) => {
 	return axios.post(USERS_API_PATH, user);
+};
+
+
+export const createRecord = (record) => {
+	return axios.post(RECORDS_API_PATH, record);
 };
 
 export const updateUser = (userId, body) => {

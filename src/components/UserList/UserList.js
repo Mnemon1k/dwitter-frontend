@@ -57,7 +57,7 @@ const UserList = () => {
 	}, [loadUsers]);
 
 	return (
-		<div className={"mt-30"}>
+		<div className={"mt-20"}>
 			<List dense={true}>
 				{
 					content.map(user => (
