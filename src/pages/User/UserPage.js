@@ -8,7 +8,9 @@ import {useParams} from "react-router-dom";
 import UserCardSkeleton from "../../components/UserCardSkeleton/UserCardSkeleton";
 import UserCard from "../../components/UserCard/UserCard";
 
-import {Container, Stack, Alert, Typography} from "@mui/material";
+import {Container, Alert, Typography, Grid} from "@mui/material";
+import RecordSubmit from "../../components/RecordSubmit/RecordSubmit";
+import RecordsFeed from "../../components/RecordsFeed/RecordsFeed";
 
 function UserPage({loggedInUser, dispatch}) {
 	const params = useParams();
@@ -76,31 +78,40 @@ function UserPage({loggedInUser, dispatch}) {
 	}, [params.username]);
 
 	return (
-		<div className={"padding-md text-center"} data-testid={"userpage"}>
-			<Typography component="h4" variant="h4">
-				User info page
-			</Typography>
-			<Container className={"mt-20"} maxWidth={"md"}>
-				<Stack spacing={2} alignItems={"center"} width="100%">
-					{
-						userLoadingError ?
-							<Alert severity="error"> {userLoadingError} </Alert>
-							:
-							userLoading ?
-								<UserCardSkeleton/>
+		<div className={"padding-md"} data-testid={"userpage"}>
+			<Container maxWidth={"xl"}>
+				<Typography component="h4" variant="h4">
+					User page
+				</Typography>
+				<Grid container
+					  justifyContent={"space-between"}
+					  spacing={4}>
+					<Grid item md={6}>
+						{user.isLoggedIn && <RecordSubmit/>}
+						<RecordsFeed username={params.username}/>
+					</Grid>
+					<Grid item xs={12} md={6}>
+						{
+							userLoadingError ?
+								<Alert severity="error"> {userLoadingError} </Alert>
 								:
-								<UserCard editMode={editMode}
-										  userUpdating={userUpdating}
-										  onClickUpdate={onClickUpdate}
-										  toggleEditMode={toggleEditMode}
-										  loaddedImage={image}
-										  onFileSelect={onFileSelect}
-										  errors={errors}
-										  setErrors={setErrors}
-										  isEditable={loggedInUser.username === user.username}
-										  user={user}/>
-					}
-				</Stack>
+								userLoading ?
+									<UserCardSkeleton/>
+									:
+									<UserCard editMode={editMode}
+											  userUpdating={userUpdating}
+											  onClickUpdate={onClickUpdate}
+											  toggleEditMode={toggleEditMode}
+											  loaddedImage={image}
+											  onFileSelect={onFileSelect}
+											  errors={errors}
+											  setErrors={setErrors}
+											  isEditable={loggedInUser.username === user.username}
+											  user={user}/>
+						}
+					</Grid>
+				</Grid>
+
 			</Container>
 		</div>
 	);

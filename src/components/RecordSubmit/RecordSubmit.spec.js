@@ -83,33 +83,33 @@ describe("RecordSubmit", () => {
 
 			const textarea = screen.getByRole("textbox");
 			fireEvent.focus(textarea)
-			fireEvent.change(textarea, {target: {value: "test post"}});
+			fireEvent.change(textarea, {target: {value: "test post text"}});
 
 			const postBtn = screen.getByText("Post");
 
 			apiCalls.createRecord = jest.fn().mockResolvedValue({});
 
 			fireEvent.click(postBtn);
-			expect(apiCalls.createRecord).toBeCalledWith({content: "test post"});
+			expect(apiCalls.createRecord).toBeCalledWith({content: "test post text"});
 		});
-		it('should return to unfocused state after successfull createRecord api call', async function () {
+		it('should return to unfocused state after successfully createRecord api call', async function () {
 			setup();
 
 			const textarea = screen.getByRole("textbox");
 			fireEvent.focus(textarea)
 			const postBtn = screen.getByText("Post");
 
-			fireEvent.change(textarea, {target: {value: "test post test"}});
+			fireEvent.change(textarea, {target: {value: "test post text"}});
 
 			apiCalls.createRecord = jest.fn().mockResolvedValue({});
 
 			fireEvent.click(postBtn);
 
 			await waitFor(() => {
-				expect(postBtn).not.toBeInTheDocument();
+				expect(screen.getByText("Success")).toBeInTheDocument();
 			});
 		});
-		it('shold clear textarea after successfull createRecord api call', async function () {
+		it('shold clear textarea after successfully createRecord api call', async function () {
 			setup();
 
 			const textarea = screen.getByRole("textbox");

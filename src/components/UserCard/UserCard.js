@@ -24,8 +24,8 @@ const UserCard = ({
 					data-testid={"UserImage"}
 					src={loaddedImage ? loaddedImage : user?.image && "/images/profile/" + user?.image}
 					sx={{
-						width: {xs: "100%", sm: 290, md: 360},
-						height: {xs: "100%", sm: 290, md: 360}
+						width: {xs: "100%", sm: 290, md: 180, lg: 290, xl: 340},
+						height: {xs: "100%", sm: 290, md: 180, lg: 290, xl: 340}
 					}}
 			/>
 

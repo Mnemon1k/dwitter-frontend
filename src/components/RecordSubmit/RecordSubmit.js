@@ -90,7 +90,7 @@ const RecordSubmit = ({user}) => {
 									onClick={onPost}
 									endIcon={success ? null : <SendIcon/>}
 									loading={loading}
-									loadingPosition="end"
+									loadingPosition={success ? null : "end"}
 									variant="contained"
 									color={success ? "success" : "secondary"}
 									disableElevation

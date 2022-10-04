@@ -2,6 +2,7 @@ import {useCallback, useEffect, useState} from "react";
 import {getUsers} from "../../api/apiCalls";
 import {Alert, List, Pagination} from "@mui/material";
 import UserListItem from "./UserListItem";
+import RecordSkeleton from "../ReacordSkeleton/RecordSkeleton";
 
 const UserList = () => {
 	const [page, setPage] = useState(0);
@@ -10,6 +11,7 @@ const UserList = () => {
 	const [content, setContent] = useState([]);
 	const [requestError, setRequestError] = useState(null);
 	const [usersLoading, setUsersLoading] = useState(false);
+	const [initialLoad, setInitialLoad] = useState(true);
 
 	const loadUsers = useCallback(
 		(pageToLoad = 0) => {
@@ -31,9 +33,10 @@ const UserList = () => {
 				})
 				.finally(() => {
 					setUsersLoading(false);
+					setInitialLoad(false);
 				});
 		},
-		[size, totalPages]
+		[size]
 	);
 
 	const handlePageChange = (event) => {
@@ -58,20 +61,32 @@ const UserList = () => {
 
 	return (
 		<div className={"mt-20"}>
-			<List dense={true}>
-				{
-					content.map(user => (
-						<UserListItem key={user.id} user={user}/>
-					))
-				}
-			</List>
-			<Pagination
-				onChange={handlePageChange}
-				count={totalPages}
-				page={page + 1}
-				color="primary"
-				disabled={usersLoading}
-			/>
+			{
+				usersLoading && initialLoad ?
+					<>
+						<RecordSkeleton style={{width: "90%"}}/>
+						<RecordSkeleton style={{width: "90%"}}/>
+						<RecordSkeleton style={{width: "90%"}}/>
+					</>
+					:
+					content.length ?
+						<>
+							<List dense={true}>
+								{content.map(user => (
+									<UserListItem key={user.id} user={user}/>
+								))}
+							</List>
+							<Pagination
+								onChange={handlePageChange}
+								count={totalPages}
+								page={page + 1}
+								color="primary"
+								disabled={usersLoading}
+							/>
+						</>
+						:
+						<Alert severity={"info"}>No registered users</Alert>
+			}
 			{
 				requestError
 				&&

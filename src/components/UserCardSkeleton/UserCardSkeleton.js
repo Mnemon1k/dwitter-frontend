@@ -5,8 +5,8 @@ const UserCardSkeleton = () => {
 		<Card data-testid={"user-card-skeletor"} sx={{display: 'flex'}}>
 			<Skeleton
 				sx={{
-					width: {xs: "100%", sm: 290, md: 360},
-					height: {xs: "100%", sm: 290, md: 360}
+					width: {xs: "100%", sm: 290, md: 180, lg: 290, xl: 340},
+					height: {xs: "100%", sm: 290, md: 180, lg: 290, xl: 340}
 				}}
 			/>
 			<CardContent className={"text-left card-skeleton"} sx={{flex: 1}}>
