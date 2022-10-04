@@ -40,7 +40,7 @@ const UserEditForm = ({
 					onClick={() => onClickUpdate({displayName: newName})}
 					loading={userUpdating}
 					variant="contained"
-					color={"success"}
+					color={"secondary"}
 					disableElevation
 					loadingIndicator="Loading…"
 				>

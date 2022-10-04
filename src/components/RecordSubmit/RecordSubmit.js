@@ -11,6 +11,7 @@ const RecordSubmit = ({user}) => {
 	const [content, setContent] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [success, setSuccess] = useState(false);
 
 	const submitPost = () => {
 		setLoading(true);
@@ -19,7 +20,11 @@ const RecordSubmit = ({user}) => {
 		createRecord({content})
 			.then(() => {
 				setContent("");
-				setFocused(false);
+				setSuccess(true);
+				setTimeout(() => {
+					setFocused(false);
+					setSuccess(false);
+				}, 1000);
 			})
 			.catch(({response}) => {
 				setError(response?.data?.validationErrors)
@@ -29,7 +34,13 @@ const RecordSubmit = ({user}) => {
 			});
 	}
 
-	const onPost = () => submitPost();
+	const onPost = () => {
+		if (content.length > 10 && content.length < 333) {
+			submitPost();
+		} else {
+			setError({content: "Post should be more than 10 and less than 333 letters."});
+		}
+	};
 	const onCanlcel = () => {
 		setFocused(false);
 		setContent("");
@@ -64,7 +75,12 @@ const RecordSubmit = ({user}) => {
 							multiline
 							label="Whats new?"
 							value={content}
-							rows={focused ? 4 : 1}
+							inputProps={{
+								style: {
+									transition: "all 0.12s ease-out",
+									height: focused ? "100px" : "30px",
+								}
+							}}
 							helperText={error?.content && error?.content.charAt(0).toUpperCase() + error?.content.slice(1)}
 							error={!!error?.content}
 						/>
@@ -72,17 +88,19 @@ const RecordSubmit = ({user}) => {
 							<Stack className={"mt-20"} spacing={2} direction="row">
 								<LoadingButton
 									onClick={onPost}
-									endIcon={<SendIcon/>}
+									endIcon={success ? null : <SendIcon/>}
 									loading={loading}
 									loadingPosition="end"
 									variant="contained"
+									color={success ? "success" : "secondary"}
 									disableElevation
 								>
-									Post
+									{success ? "Success" : "Post"}
 								</LoadingButton>
 
-								<Button variant="outlined"
-										onClick={onCanlcel}>Cancel</Button>
+								<Button
+									disableElevation
+									onClick={onCanlcel}>Cancel</Button>
 							</Stack>
 						}
 					</div>

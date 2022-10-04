@@ -44,7 +44,7 @@ const UserCard = ({
 				{(isEditable && !editMode) &&
 					<Button style={{marginTop: 10}}
 							variant="contained"
-							color={"primary"}
+							color={"secondary"}
 							disableElevation
 							onClick={toggleEditMode}
 							startIcon={<Edit/>}>Edit</Button>}
