@@ -56,6 +56,7 @@ const setUserOneLoggedInStorage = () => {
 		}));
 }
 
+
 let store;
 const renderUserPage = (path) => {
 	store = configureStore(false);
@@ -67,6 +68,13 @@ const renderUserPage = (path) => {
 }
 
 beforeEach(() => {
+	apiCalls.getRecords = jest.fn().mockResolvedValue({
+		data: {
+			content: [],
+			number: 0,
+			size: 3
+		}
+	});
 	localStorage.clear();
 	delete axios.defaults.headers.common['Authorization'];
 });
@@ -148,6 +156,7 @@ describe("UserPage", () => {
 		it('should call udpateUserApi with user id', async function () {
 			await setupEdit();
 			apiCalls.updateUser = jest.fn().mockResolvedValue(mockSuccessUpdateUser);
+
 			fireEvent.click(screen.getByText("Update user"));
 			const userId = apiCalls.updateUser.mock.calls[0][0];
 			const data = apiCalls.updateUser.mock.calls[0][1];

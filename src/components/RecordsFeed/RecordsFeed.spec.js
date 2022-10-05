@@ -12,6 +12,16 @@ const mockEmptyResponse = {
 	}
 };
 
+beforeEach(() => {
+	apiCalls.getRecords = jest.fn().mockResolvedValue({
+		data: {
+			content: [],
+			number: 0,
+			size: 3
+		}
+	});
+});
+
 describe("RecordsFeed", () => {
 	describe("Lifecycle", () => {
 		it('should call getRecords when rendered', async function () {

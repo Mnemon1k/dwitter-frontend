@@ -7,41 +7,41 @@ export const RECORDS_API_PATH = BASE_PATH + "/records";
 
 // Auth
 
-export const login = (credentials) => {
+export let login = (credentials) => {
 	return axios.post(BASE_PATH + '/login', {}, {
 		auth: credentials
 	});
 }
 
-export const signup = (user) => {
+export let signup = (user) => {
 	return axios.post(USERS_API_PATH, user);
 };
 
 
 // Users
 
-export const updateUser = (userId, body) => {
+export let updateUser = (userId, body) => {
 	return axios.put(USERS_API_PATH + '/' + userId, body);
 };
 
-export const getUsers = (params) => {
+export let getUsers = (params) => {
 	const defaultPage = 0;
 	const defaultPageSize = 3;
 	return axios.get(USERS_API_PATH + `?page=${params?.page || defaultPage}&size=${params?.size || defaultPageSize}`);
 };
 
-export const getUser = (username) => {
+export let getUser = (username) => {
 	return axios.get(USERS_API_PATH + `/${username}`);
 };
 
 
 //Records
 
-export const createRecord = (record) => {
+export let createRecord = (record) => {
 	return axios.post(RECORDS_API_PATH, record);
 };
 
-export const getRecords = (params = {}) => {
+export let getRecords = (params = {}) => {
 	const {
 		username,
 		page = 0,

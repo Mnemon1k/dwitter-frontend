@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 
 import "./Header.scss"
-import {Avatar, IconButton, Menu, MenuItem, Tooltip} from "@mui/material";
+import {Avatar, Container, IconButton, Menu, MenuItem, Tooltip} from "@mui/material";
 import {useState} from "react";
 import {ArrowDropDown} from "@mui/icons-material";
 
@@ -65,9 +65,9 @@ function Header({user, dispatch}) {
 	}
 
 	return (
-		<Box sx={{display: 'flex'}}>
-			<AppBar elevation={0} data-testid={"header"} component="nav" className={"header"}>
-				<Toolbar>
+		<AppBar elevation={0} data-testid={"header"} component="nav" className={"header"}>
+			<Container maxWidth={"xl"}>
+				<Toolbar disableGutters>
 					<Typography variant="h6"
 								sx={{flexGrow: 1}}
 								className={"nav-logo"}>
@@ -77,12 +77,11 @@ function Header({user, dispatch}) {
 						</Link>
 					</Typography>
 					<Box className={"menu"}>
-						{/*<MenuLink color={"#fff"} to={"/"}>Home</MenuLink>*/}
 						{getUserMenu()}
 					</Box>
 				</Toolbar>
-			</AppBar>
-		</Box>
+			</Container>
+		</AppBar>
 	);
 }
 

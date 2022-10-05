@@ -2,6 +2,7 @@ import UserList from "./UserList";
 import {act, fireEvent, render, screen} from "@testing-library/react";
 import * as apiCalls from "../../api/apiCalls";
 import {MemoryRouter} from "react-router-dom";
+import axios from "axios";
 
 const setup = () => {
 	render(
@@ -101,6 +102,26 @@ const mockFailResponse = {
 	}
 };
 
+
+beforeEach(() => {
+	apiCalls.getUsers = jest.fn().mockResolvedValue({
+		data: {
+			content: [],
+			number: 0,
+			size: 3
+		}
+	});
+
+	apiCalls.getUser = jest.fn().mockResolvedValue({
+		data: {
+			id: 1,
+			username: "user-1",
+			displayName: "display-1",
+			image: "profile.png"
+		}
+	});
+});
+
 describe("UserList", () => {
 	describe("Layout", () => {
 		it('should display displayName when api return users', async function () {
@@ -187,12 +208,6 @@ describe("UserList", () => {
 			const nextLink = await screen.findByTestId("NavigateNextIcon");
 			fireEvent.click(nextLink);
 			expect(nextLink.closest("button").disabled).toBeTruthy();
-		});
-		it('should disable prev button when current pages is 1', async function () {
-			apiCalls.getUsers = jest.fn().mockResolvedValueOnce(mockedSuccessGetMultiPageFirst);
-			setup();
-			const prevLink = await screen.findByTestId("NavigateBeforeIcon");
-			expect(prevLink.closest("button").disabled).toBeTruthy();
 		});
 		it('should display error when request fails', async function () {
 			apiCalls.getUsers = jest.fn().mockResolvedValueOnce(mockedSuccessGetMultiPageLast)

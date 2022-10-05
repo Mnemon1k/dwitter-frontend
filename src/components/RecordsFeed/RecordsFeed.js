@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import {getRecords} from "../../api/apiCalls";
+import * as apiCalls from "../../api/apiCalls";
+
 import {Alert} from "@mui/material";
 import RecordSkeleton from "../ReacordSkeleton/RecordSkeleton";
 
@@ -10,7 +11,7 @@ const RecordsFeed = ({username}) => {
 
 	useEffect(() => {
 		setLoading(true);
-		getRecords({username})
+		apiCalls.getRecords({username})
 			.then(({data}) => {
 				setContent(data?.content);
 			})

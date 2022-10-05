@@ -78,7 +78,7 @@ const RecordSubmit = ({user}) => {
 							inputProps={{
 								style: {
 									transition: "all 0.12s ease-out",
-									height: focused ? "100px" : "30px",
+									height: focused ? "100px" : "26px",
 								}
 							}}
 							helperText={error?.content && error?.content.charAt(0).toUpperCase() + error?.content.slice(1)}

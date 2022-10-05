@@ -5,6 +5,7 @@ import App from "./App";
 import {Provider} from "react-redux";
 import axios from "axios";
 import configureStore from "../redux/configureStore";
+import * as apiCalls from "../api/apiCalls";
 
 const renderApp = (path) => {
 	const store = configureStore(false);
@@ -24,6 +25,31 @@ const changeEvent = (content) => ({
 beforeEach(() => {
 	localStorage.clear();
 	delete axios.defaults.headers.common['Authorization'];
+
+	apiCalls.getRecords = jest.fn().mockResolvedValue({
+		data: {
+			content: [],
+			number: 0,
+			size: 3
+		}
+	});
+
+	apiCalls.getUsers = jest.fn().mockResolvedValue({
+		data: {
+			content: [],
+			number: 0,
+			size: 3
+		}
+	});
+
+	apiCalls.getUser = jest.fn().mockResolvedValue({
+		data: {
+			id: 1,
+			username: "user-1",
+			displayName: "display-1",
+			image: "profile.png"
+		}
+	});
 });
 
 describe("App", () => {
@@ -36,7 +62,7 @@ describe("App", () => {
 		expect(screen.getByTestId("loginpage")).toBeInTheDocument();
 	});
 	it('should display user page when url is /users', function () {
-		renderApp("/users/user-1");
+		renderApp("/users/user1");
 		expect(screen.getByTestId("userpage")).toBeInTheDocument();
 	});
 	it('should display login page when url is /signup', function () {
@@ -75,7 +101,7 @@ describe("App", () => {
 			data: {
 				id: 1,
 				username: "user1",
-				displayName: "display1",
+				displayName: "display-1",
 				image: "href"
 			}
 		});
@@ -105,7 +131,7 @@ describe("App", () => {
 			data: {
 				id: 1,
 				username: "user1",
-				displayName: "display1",
+				displayName: "display-1",
 				image: "href"
 			}
 		});
@@ -117,7 +143,7 @@ describe("App", () => {
 		expect(authData).toEqual({
 			id: 1,
 			username: "user1",
-			displayName: "display1",
+			displayName: "display-1",
 			image: "href",
 			password: "1Password",
 			isLoggedIn: true
