@@ -35,6 +35,9 @@ const RecordSubmit = ({user}) => {
 	}
 
 	const onPost = () => {
+		if (success)
+			return;
+
 		if (content.length > 10 && content.length < 333) {
 			submitPost();
 		} else {

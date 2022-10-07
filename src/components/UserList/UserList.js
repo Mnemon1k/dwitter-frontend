@@ -85,7 +85,7 @@ const UserList = () => {
 							/>
 						</>
 						:
-						<Alert severity={"info"}>No registered users</Alert>
+						!requestError && <Alert severity={"info"}>No registered users</Alert>
 			}
 			{
 				requestError

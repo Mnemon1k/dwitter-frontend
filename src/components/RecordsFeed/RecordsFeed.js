@@ -3,23 +3,44 @@ import * as apiCalls from "../../api/apiCalls";
 
 import {Alert} from "@mui/material";
 import RecordSkeleton from "../ReacordSkeleton/RecordSkeleton";
+import RecordItem from "../RecordItem/RecordItem";
+import LoadingButton from "@mui/lab/LoadingButton";
 
 const RecordsFeed = ({username}) => {
 	const [content, setContent] = useState([]);
 	const [loading, setLoading] = useState(false);
+	const [morePostsLoading, setMorePostsLoading] = useState(false);
 	const [error, setError] = useState(null);
+	const [pagination, setPagination] = useState({});
+
+	const apiRequest = (params) => {
+		setError(null);
+		return apiCalls.getRecords(params)
+			.then(({data}) => {
+				const {content: newContent, ...pagination} = data;
+				setPagination(pagination);
+				setContent([...content, ...newContent]);
+			})
+			.catch(() => {
+				setError("Error while loading posts");
+			})
+	}
 
 	useEffect(() => {
 		setLoading(true);
-		apiCalls.getRecords({username})
-			.then(({data}) => {
-				setContent(data?.content);
-			})
-			.catch()
+		apiRequest({username})
 			.finally(() => {
 				setLoading(false);
 			});
 	}, [username]);
+
+	const loadNextPage = () => {
+		setMorePostsLoading(true);
+		apiRequest({username, page: pagination.number + 1})
+			.finally(() => {
+				setMorePostsLoading(false);
+			});
+	}
 
 	return (
 		<div className={"mt-20"}>
@@ -27,19 +48,35 @@ const RecordsFeed = ({username}) => {
 				loading ?
 					<>
 						<RecordSkeleton text/>
-
 						<RecordSkeleton className={"mt-20"} image text/>
 					</>
 					:
 					content?.length
 						?
-						content?.map(({id, content}) => (
-							<div key={id}>
-								{content}
-							</div>
-						))
+						<>
+							{content?.map((post) => (
+								<RecordItem post={post} key={post.id}/>
+							))}
+							{
+								!pagination.last &&
+								<div style={{marginTop: 25, textAlign: "center"}}>
+									<LoadingButton
+										onClick={loadNextPage}
+										loading={morePostsLoading}
+										variant="contained"
+										size={"large"}
+										disableElevation
+									>
+										Load more
+									</LoadingButton>
+								</div>
+							}
+						</>
 						:
-						<Alert severity="info">There is no posts</Alert>
+						!error && <Alert severity="info">There is no posts</Alert>
+			}
+			{
+				error && <Alert className={"mt-20"} severity="error">{error}</Alert>
 			}
 		</div>
 	);

@@ -12,6 +12,29 @@ const mockEmptyResponse = {
 	}
 };
 
+const mockSuccessSinglePageResponse = {
+	data: {
+		content: [
+			{
+				id: 10,
+				content: "qwe qwe qwe",
+				date: 123124125125,
+				user: {
+					id: 1,
+					username: "used-1",
+					displayName: "display1",
+					image: "profile.png"
+				}
+			}
+		],
+		number: 0,
+		first: true,
+		last: true,
+		size: 5,
+		totalPages: 1
+	}
+};
+
 beforeEach(() => {
 	apiCalls.getRecords = jest.fn().mockResolvedValue({
 		data: {
@@ -47,6 +70,20 @@ describe("RecordsFeed", () => {
 			setup();
 			await waitFor(() => {
 				expect(screen.queryByText("There is no posts")).toBeInTheDocument();
+			});
+		});
+		it('should not display "no posts" message when there are posts in response', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessSinglePageResponse);
+			setup();
+			await waitFor(() => {
+				expect(screen.queryByText("There is no posts")).not.toBeInTheDocument();
+			});
+		});
+		it('should display post content', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessSinglePageResponse);
+			setup();
+			await waitFor(() => {
+				expect(screen.queryByText(mockSuccessSinglePageResponse.data.content)).toBeInTheDocument();
 			});
 		});
 	});
