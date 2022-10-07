@@ -55,6 +55,30 @@ export let getRecords = (params = {}) => {
 	return axios.get(path + `?page=${page}&size=${size}&sort=id,desc`);
 };
 
+export let getPrevRecords = (id, username) => {
+	const query = "?direction=before&page=0&size=5&sort=id,desc";
+	const basePath = `/api/1.0/records/${id}` + query;
+	const userPath = `/api/1.0/users/${username}/records/${id}` + query;
+	return axios.get(username ? userPath : basePath);
+};
+
+export let getNewRecords = (id, username) => {
+	const query = "?direction=after&sort=id,desc";
+	const basePath = `/api/1.0/records/${id}` + query;
+	const userPath = `/api/1.0/users/${username}/records/${id}` + query;
+	return axios.get(username ? userPath : basePath);
+};
+
+export let getNewRecordsCount = (id, username) => {
+	const query = "?direction=after&count=true";
+	const basePath = `/api/1.0/records/${id}` + query;
+	const userPath = `/api/1.0/users/${username}/records/${id}` + query;
+	return axios.get(username ? userPath : basePath);
+};
+
+
+// Auth
+
 export const setAuthorizationHeader = ({username, password, isLoggedIn}) => {
 	if (isLoggedIn) {
 		axios.defaults.headers.common['Authorization'] = `Basic ${btoa(username + ":" + password)}`

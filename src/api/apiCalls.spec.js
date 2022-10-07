@@ -104,4 +104,58 @@ describe('apiCalls', () => {
 			expect(path).toBe("/api/1.0/users/user1/records?page=0&size=5&sort=id,desc");
 		});
 	});
+	describe("loadPrevRecords", () => {
+		it('should calls /api/1.0/records/5?direction=before&page=0&size=5&sort=id,desc when record id is provided', function () {
+			const mockGetRecords = jest.fn();
+			axios.get = mockGetRecords;
+			apiCalls.getPrevRecords(5);
+
+			const path = mockGetRecords.mock.calls[0][0];
+			expect(path).toBe("/api/1.0/records/5?direction=before&page=0&size=5&sort=id,desc");
+		});
+		it('should calls /api/1.0/users/user3/records/5?direction=before&page=0&size=5&sort=id,desc when record id and username is provided', function () {
+			const mockGetRecords = jest.fn();
+			axios.get = mockGetRecords;
+			apiCalls.getPrevRecords(5, "user3");
+
+			const path = mockGetRecords.mock.calls[0][0];
+			expect(path).toBe("/api/1.0/users/user3/records/5?direction=before&page=0&size=5&sort=id,desc");
+		});
+	})
+	describe("loadNewRecords", () => {
+		it('should calls /api/1.0/records/5?direction=after&sort=id,desc when record id is provided', function () {
+			const mockGetRecords = jest.fn();
+			axios.get = mockGetRecords;
+			apiCalls.getNewRecords(5);
+
+			const path = mockGetRecords.mock.calls[0][0];
+			expect(path).toBe("/api/1.0/records/5?direction=after&sort=id,desc");
+		});
+		it('should calls /api/1.0/users/user3/records/5?direction=after&sort=id,desc when record id and username is provided', function () {
+			const mockGetRecords = jest.fn();
+			axios.get = mockGetRecords;
+			apiCalls.getNewRecords(5, "user3");
+
+			const path = mockGetRecords.mock.calls[0][0];
+			expect(path).toBe("/api/1.0/users/user3/records/5?direction=after&sort=id,desc");
+		});
+	})
+	describe("loadNewRecordsCount", () => {
+		it('should calls /api/1.0/records/5?direction=after&count=true when record id is provided', function () {
+			const mockGetRecords = jest.fn();
+			axios.get = mockGetRecords;
+			apiCalls.getNewRecordsCount(5);
+
+			const path = mockGetRecords.mock.calls[0][0];
+			expect(path).toBe("/api/1.0/records/5?direction=after&count=true");
+		});
+		it('should calls /api/1.0/users/user3/records/5?direction=after&count=true when record id and username is provided', function () {
+			const mockGetRecords = jest.fn();
+			axios.get = mockGetRecords;
+			apiCalls.getNewRecordsCount(5, "user3");
+
+			const path = mockGetRecords.mock.calls[0][0];
+			expect(path).toBe("/api/1.0/users/user3/records/5?direction=after&count=true");
+		});
+	})
 });

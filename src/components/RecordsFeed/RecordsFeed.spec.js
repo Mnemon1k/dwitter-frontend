@@ -1,9 +1,13 @@
 import * as apiCalls from "../../api/apiCalls";
-import {act, render, screen, waitFor} from "@testing-library/react";
+import {fireEvent, render, screen, waitFor} from "@testing-library/react";
 import RecordsFeed from "./RecordsFeed";
+import {MemoryRouter} from "react-router-dom";
 
 const setup = (props) => {
-	render(<RecordsFeed {...props}/>);
+	render(
+		<MemoryRouter>
+			<RecordsFeed {...props}/>
+		</MemoryRouter>);
 }
 
 const mockEmptyResponse = {
@@ -32,6 +36,63 @@ const mockSuccessSinglePageResponse = {
 		last: true,
 		size: 5,
 		totalPages: 1
+	}
+};
+
+const mockSuccessGetRecordsFirstOfMultiPageResponse = {
+	data: {
+		content: [
+			{
+				id: 10,
+				content: "post 10",
+				date: 123124125125,
+				user: {
+					id: 1,
+					username: "used-1",
+					displayName: "display1",
+					image: "profile.png"
+				}
+			},
+			{
+				id: 9,
+				content: "post 9",
+				date: 12312412515,
+				user: {
+					id: 1,
+					username: "used-1",
+					displayName: "display1",
+					image: "profile.png"
+				}
+			}
+		],
+		number: 0,
+		first: true,
+		last: false,
+		size: 5,
+		totalPages: 2
+	}
+};
+
+const mockSuccessGetRecordsLastOfMultiPageResponse = {
+	data: {
+		content: [
+			{
+				id: 1,
+				content: "oldest post",
+				date: 123124125125,
+				user: {
+					id: 1,
+					username: "used-1",
+					displayName: "display1",
+					image: "profile.png"
+				}
+			}
+		],
+		number: 0,
+		first: true,
+		last: true,
+		size: 5,
+		totalPages: 2
 	}
 };
 
@@ -82,9 +143,43 @@ describe("RecordsFeed", () => {
 		it('should display post content', async function () {
 			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessSinglePageResponse);
 			setup();
-			await waitFor(() => {
-				expect(screen.queryByText(mockSuccessSinglePageResponse.data.content)).toBeInTheDocument();
-			});
+			expect(await screen.findByText(mockSuccessSinglePageResponse.data.content[0].content)).toBeInTheDocument();
+		});
+	});
+	describe("Interactions", () => {
+		it('should loadPrevRecords with last record id when clicking load more', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsFirstOfMultiPageResponse);
+			apiCalls.getPrevRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsLastOfMultiPageResponse);
+			setup();
+			const btn = await screen.findByText("Load more");
+			fireEvent.click(btn);
+			expect(apiCalls.getPrevRecords.mock.calls[0][0]).toBe(9);
+		});
+		it('should loadPrevRecords when last record id and username when clicking load more when renderen with usern property', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsFirstOfMultiPageResponse);
+			apiCalls.getPrevRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsLastOfMultiPageResponse);
+			setup({username: "user1"});
+			const btn = await screen.findByText("Load more");
+			fireEvent.click(btn);
+			expect(apiCalls.getPrevRecords).toBeCalledWith(9, "user1");
+		});
+		it('should display loaded records when prev records successfully loaded', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsFirstOfMultiPageResponse);
+			apiCalls.getPrevRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsLastOfMultiPageResponse);
+			setup();
+			const btn = await screen.findByText("Load more");
+			fireEvent.click(btn);
+			const prevRecord = await screen.findByText(mockSuccessGetRecordsLastOfMultiPageResponse.data.content[0].content);
+			expect(prevRecord).toBeInTheDocument();
+		});
+		it('should hide load more button when load prev posts call return last page', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsFirstOfMultiPageResponse);
+			apiCalls.getPrevRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsLastOfMultiPageResponse);
+			setup();
+			const btn = await screen.findByText("Load more");
+			fireEvent.click(btn);
+			await screen.findByText(mockSuccessGetRecordsLastOfMultiPageResponse.data.content[0].content);
+			expect(btn).not.toBeInTheDocument();
 		});
 	});
 });

@@ -36,7 +36,14 @@ const RecordsFeed = ({username}) => {
 
 	const loadNextPage = () => {
 		setMorePostsLoading(true);
-		apiRequest({username, page: pagination.number + 1})
+
+		const lastPost = content[content.length - 1];
+		apiCalls.getPrevRecords(lastPost.id, username)
+			.then((response) => {
+				const {content: newContent, ...pagination} = response?.data;
+				setContent([...content, ...newContent])
+				setPagination(pagination);
+			})
 			.finally(() => {
 				setMorePostsLoading(false);
 			});

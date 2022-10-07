@@ -60,7 +60,7 @@ function UserPage({loggedInUser, dispatch}) {
 				if (error?.response?.data?.validationErrors) {
 					setErrors(error?.response?.data?.validationErrors);
 				} else {
-					alert("Server error while updating user");
+					setUserLoadingError(error?.message);
 				}
 			})
 			.finally(() => setUserUpdating(false));
