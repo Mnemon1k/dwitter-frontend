@@ -41,6 +41,10 @@ export let createRecord = (record) => {
 	return axios.post(RECORDS_API_PATH, record);
 };
 
+export let removeRecord = (recordId) => {
+	return axios.delete(RECORDS_API_PATH + "/" + recordId);
+};
+
 export let getRecords = (params = {}) => {
 	const {
 		username,

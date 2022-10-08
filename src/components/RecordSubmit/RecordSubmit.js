@@ -1,33 +1,29 @@
 import React, {useState} from 'react';
-import {Avatar, ListItem, ListItemAvatar, Stack, TextField, Typography} from "@mui/material";
+import {Alert, Avatar, ListItem, ListItemAvatar, Stack, TextField, Typography} from "@mui/material";
 import {connect} from "react-redux";
 import Button from "@mui/material/Button";
 import {createRecord} from "../../api/apiCalls";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from '@mui/icons-material/Send';
 
-const RecordSubmit = ({user}) => {
+const RecordSubmit = ({user, content, setContent}) => {
 	const [focused, setFocused] = useState(false);
-	const [content, setContent] = useState("");
+	const [post, setPost] = useState("");
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState(null);
-	const [success, setSuccess] = useState(false);
 
 	const submitPost = () => {
 		setLoading(true);
 		setError(null);
 
-		createRecord({content})
-			.then(() => {
-				setContent("");
-				setSuccess(true);
-				setTimeout(() => {
-					setFocused(false);
-					setSuccess(false);
-				}, 1000);
+		createRecord({content: post})
+			.then(({data}) => {
+				setPost("");
+				setContent([data, ...content]);
+				setFocused(false);
 			})
-			.catch(({response}) => {
-				setError(response?.data?.validationErrors)
+			.catch((data) => {
+				setError(data?.response?.data?.validationErrors?.length ? data?.response?.data?.validationErrors : data?.message);
 			})
 			.finally(() => {
 				setLoading(false);
@@ -35,10 +31,7 @@ const RecordSubmit = ({user}) => {
 	}
 
 	const onPost = () => {
-		if (success)
-			return;
-
-		if (content.length > 10 && content.length < 333) {
+		if (post.length > 10 && post.length < 333) {
 			submitPost();
 		} else {
 			setError({content: "Post should be more than 10 and less than 333 letters."});
@@ -46,12 +39,12 @@ const RecordSubmit = ({user}) => {
 	};
 	const onCanlcel = () => {
 		setFocused(false);
-		setContent("");
+		setPost("");
 		setError(null);
 	};
 	const textareaOnChange = (event) => {
 		setError(null);
-		setContent(event.target.value);
+		setPost(event.target.value);
 	};
 
 	return (
@@ -77,7 +70,7 @@ const RecordSubmit = ({user}) => {
 							fullWidth
 							multiline
 							label="Whats new?"
-							value={content}
+							value={post}
 							inputProps={{
 								style: {
 									transition: "all 0.12s ease-out",
@@ -87,18 +80,19 @@ const RecordSubmit = ({user}) => {
 							helperText={error?.content && error?.content.charAt(0).toUpperCase() + error?.content.slice(1)}
 							error={!!error?.content}
 						/>
+						{typeof error === "string" && <Alert className={"mt-20"} severity="error">{error}</Alert>}
 						{focused &&
 							<Stack className={"mt-20"} spacing={2} direction="row">
 								<LoadingButton
 									onClick={onPost}
-									endIcon={success ? null : <SendIcon/>}
+									endIcon={<SendIcon/>}
 									loading={loading}
-									loadingPosition={success ? null : "end"}
+									loadingPosition={"end"}
 									variant="contained"
-									color={success ? "success" : "secondary"}
+									color={"secondary"}
 									disableElevation
 								>
-									{success ? "Success" : "Post"}
+									{"Post"}
 								</LoadingButton>
 
 								<Button

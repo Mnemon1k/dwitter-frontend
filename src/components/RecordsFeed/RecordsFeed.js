@@ -7,8 +7,10 @@ import RecordItem from "../RecordItem/RecordItem";
 import LoadingButton from "@mui/lab/LoadingButton";
 import {useInterval} from "../../hooks/useInterval";
 import LoadPostsButton from "../LoadPostsButton/LoadPostsButton";
+import {connect} from "react-redux";
+import RecordSubmit from "../RecordSubmit/RecordSubmit";
 
-const RecordsFeed = ({username}) => {
+const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 	const [content, setContent] = useState([]);
 	const [loading, setLoading] = useState(false);
 	const [morePostsLoading, setMorePostsLoading] = useState(false);
@@ -41,7 +43,7 @@ const RecordsFeed = ({username}) => {
 	}, [username]);
 
 
-	useInterval(checkNewPostsCount, 1000);
+	useInterval(checkNewPostsCount, 5000);
 
 	const loadNextPage = () => {
 		setMorePostsLoading(true);
@@ -63,6 +65,10 @@ const RecordsFeed = ({username}) => {
 
 	return (
 		<div className={"mt-20"}>
+			{(loggedInUser.username && submitForm) &&
+				<RecordSubmit
+					content={content}
+					setContent={setContent}/>}
 			{
 				loading ?
 					<>
@@ -71,13 +77,19 @@ const RecordsFeed = ({username}) => {
 					</>
 					:
 					<>
-						<LoadPostsButton onClick={loadNewPosts} newPostsCount={newPostsCount}/>
+						<>
+							<LoadPostsButton onClick={loadNewPosts} newPostsCount={newPostsCount}/>
+						</>
 						{
 							content?.length
 								?
 								<>
 									{content?.map((post) => (
-										<RecordItem post={post} key={post.id}/>
+										<RecordItem post={post}
+													content={content}
+													setContent={setContent}
+													removeAction={loggedInUser.username === post.user.username}
+													key={post.id}/>
 									))}
 									{
 										!pagination.last &&
@@ -107,4 +119,10 @@ const RecordsFeed = ({username}) => {
 	);
 };
 
-export default RecordsFeed;
+
+const mapStateToProps = (state) => {
+	return {
+		loggedInUser: state
+	};
+}
+export default connect(mapStateToProps)(RecordsFeed);

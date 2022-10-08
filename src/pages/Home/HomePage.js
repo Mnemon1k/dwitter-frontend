@@ -1,6 +1,5 @@
 import UserList from "../../components/UserList/UserList";
 import {Container, Grid, Typography} from "@mui/material";
-import RecordSubmit from "../../components/RecordSubmit/RecordSubmit";
 import {connect} from "react-redux";
 import RecordsFeed from "../../components/RecordsFeed/RecordsFeed";
 
@@ -13,8 +12,7 @@ function HomePage({user}) {
 				  justifyContent={"space-between"}
 				  spacing={4}>
 				<Grid item xs={12} md={7}>
-					{user.isLoggedIn && <RecordSubmit/>}
-					<RecordsFeed/>
+					<RecordsFeed submitForm/>
 				</Grid>
 				<Grid item lg={4} xs={12} md={5}>
 					<Typography component="h5"

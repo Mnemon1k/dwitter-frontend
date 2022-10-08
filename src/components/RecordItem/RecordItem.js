@@ -1,14 +1,21 @@
-import {Avatar, Card, CardContent, CardHeader, CardMedia} from "@mui/material";
+import {Avatar, Card, CardContent, CardHeader} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import {Link} from "react-router-dom";
+import RecordRemoveButton from "../RecordRemoveButton/RecordRemoveButton";
 
-const RecordItem = ({post}) => {
+const RecordItem = ({post, removeAction, content, setContent}) => {
 	let date = new Date(post.date);
-
 
 	return (
 		<Card elevation={2} sx={{mt: 4}}>
 			<CardHeader
+				action={
+					removeAction &&
+					<RecordRemoveButton
+						content={content}
+						setContent={setContent}
+						id={post.id}/>
+				}
 				avatar={
 					<Avatar
 						sx={{width: 44, height: 44}}
@@ -18,12 +25,6 @@ const RecordItem = ({post}) => {
 				title={<Link to={"/users/" + post?.user?.username}>{post?.user?.username}</Link>}
 				subheader={date.toLocaleDateString() + " | " + date.toLocaleTimeString()}
 			/>
-
-			{/*<CardMedia*/}
-			{/*	component="img"*/}
-			{/*	height="140"*/}
-			{/*	image="https://pi.tedcdn.com/r/talkstar-photos.s3.amazonaws.com/uploads/72bda89f-9bbf-4685-910a-2f151c4f3a8a/NicolaSturgeon_2019T-embed.jpg?w=512"*/}
-			{/*/>*/}
 
 			<CardContent>
 				<Typography variant="body2" color="text.secondary" component="p">

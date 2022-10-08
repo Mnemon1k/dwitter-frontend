@@ -81,7 +81,7 @@ function UserPage({loggedInUser, dispatch}) {
 		<div className={"padding-md"} data-testid={"userpage"}>
 			<Container maxWidth={"xl"}>
 				<Typography component="h4" variant="h4">
-					User page
+					Feed
 				</Typography>
 				<Grid container
 					  justifyContent={"space-between"}
