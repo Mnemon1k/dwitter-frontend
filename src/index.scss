@@ -54,6 +54,17 @@ a {
   padding-bottom: 40px;
 }
 
+html body .btn-fullwidth {
+  width: 100%;
+  max-width: none;
+  background: #ecf6f9;
+  border-radius: 3px;
+
+  font-weight: 400;
+  letter-spacing: 0.4px;
+  color: #06155c;
+}
+
 /*
 * Logo
 */

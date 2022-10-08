@@ -2,6 +2,7 @@ import * as apiCalls from "../../api/apiCalls";
 import {fireEvent, render, screen, waitFor} from "@testing-library/react";
 import RecordsFeed from "./RecordsFeed";
 import {MemoryRouter} from "react-router-dom";
+import {getNewRecordsCount} from "../../api/apiCalls";
 
 const setup = (props) => {
 	render(
@@ -124,6 +125,48 @@ describe("RecordsFeed", () => {
 			const body = apiCalls.getRecords.mock.calls[0][0];
 			expect(body.username).toBeUndefined();
 		});
+		it('should call getNewRecordsCount with last record id', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsFirstOfMultiPageResponse);
+			apiCalls.getNewRecordsCount = jest.fn().mockResolvedValue({data: {count: 1}});
+			setup();
+			await screen.findByText(mockSuccessGetRecordsFirstOfMultiPageResponse.data.content[0].content);
+			await waitFor(() => {
+				expect(apiCalls.getNewRecordsCount.mock.calls[0][0]).toBe(10);
+			}, {timeout: 10000});
+		});
+		it('should call getNewRecordsCount with last record id and username when rendered with user property', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsFirstOfMultiPageResponse);
+			apiCalls.getNewRecordsCount = jest.fn().mockResolvedValue(mockSuccessGetRecordsLastOfMultiPageResponse);
+			setup({username: "user1"});
+			const btn = await screen.findByText("Load more");
+			fireEvent.click(btn);
+			await waitFor(() => {
+				expect(apiCalls.getNewRecordsCount).toBeCalledWith(10, "user1");
+			}, {timeout: 10000});
+		});
+		it('should display new posts count as 1 after getNewRecordsCount success', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsFirstOfMultiPageResponse);
+			apiCalls.getNewRecordsCount = jest.fn().mockResolvedValue({data: {count: 1}});
+			setup({username: "user1"});
+			await waitFor(async () => {
+				const text = await screen.findByText("There is 1 new post");
+				expect(text).toBeInTheDocument();
+			}, {timeout: 10000});
+		}, 20000);
+		it('should display new posts count constantly', async function () {
+			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsFirstOfMultiPageResponse);
+			apiCalls.getNewRecordsCount = jest.fn().mockResolvedValueOnce({data: {count: 1}});
+			setup({username: "user1"});
+			await waitFor(async () => {
+				const text = await screen.findByText("There is 1 new post");
+				expect(text).toBeInTheDocument();
+			}, {timeout: 10000});
+			apiCalls.getNewRecordsCount = jest.fn().mockResolvedValueOnce({data: {count: 2}});
+			await waitFor(async () => {
+				const text = await screen.findByText("There are 2 new posts");
+				expect(text).toBeInTheDocument();
+			}, {timeout: 10000});
+		}, 20000);
 	});
 	describe("Layout", () => {
 		it('should display no records message when the response is empty', async function () {
@@ -155,7 +198,7 @@ describe("RecordsFeed", () => {
 			fireEvent.click(btn);
 			expect(apiCalls.getPrevRecords.mock.calls[0][0]).toBe(9);
 		});
-		it('should loadPrevRecords when last record id and username when clicking load more when renderen with usern property', async function () {
+		it('should loadPrevRecords when last record id and username when clicking load more when rendered with user property', async function () {
 			apiCalls.getRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsFirstOfMultiPageResponse);
 			apiCalls.getPrevRecords = jest.fn().mockResolvedValue(mockSuccessGetRecordsLastOfMultiPageResponse);
 			setup({username: "user1"});
