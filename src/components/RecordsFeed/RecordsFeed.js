@@ -1,5 +1,4 @@
-import React, {useEffect, useState} from 'react';
-import * as apiCalls from "../../api/apiCalls";
+import React, {useState} from 'react';
 
 import {Alert} from "@mui/material";
 import RecordSkeleton from "../ReacordSkeleton/RecordSkeleton";
@@ -9,57 +8,57 @@ import {useInterval} from "../../hooks/useInterval";
 import LoadPostsButton from "../LoadPostsButton/LoadPostsButton";
 import {connect} from "react-redux";
 import RecordSubmit from "../RecordSubmit/RecordSubmit";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {getNewRecords, getPrevRecords, getRecords} from "../../api/reactQueryApi";
 
 const RecordsFeed = ({username, loggedInUser, submitForm}) => {
-	const [content, setContent] = useState([]);
-	const [loading, setLoading] = useState(false);
-	const [morePostsLoading, setMorePostsLoading] = useState(false);
-	const [error, setError] = useState(null);
 	const [pagination, setPagination] = useState({});
 	const [newPostsCount, setNewPostsCount] = useState(0);
+	const [content, setContent] = useState([]);
 
-	const processResponse = (response) => {
-		const {content: newContent, ...pagination} = response?.data;
-		setContent([...content, ...newContent]);
-		setPagination(pagination);
-	};
+	const queryClient = useQueryClient();
 
-	const processError = () => setError("Error while loading posts");
+	let {isLoading, error} = useQuery(
+		["records", username],
+		() => getRecords({username}),
+		{
+			onSuccess: (response) => {
+				setContent(response);
+			},
+			keepPreviousData: true
+		}
+	);
+
+	console.log(isLoading);
+
+	const loadNewPosts2 = useMutation(() => getPrevRecords(content[content.length - 1]?.id || 0, username), {
+		onSuccess: (response) => {
+			const {content: newContent, ...pagination} = response;
+
+			setPagination(pagination);
+			setContent([...content, ...newContent]);
+		}
+	});
+
+	// const processError = () => setError("Error while loading posts");
+
 	const checkNewPostsCount = () => {
-		apiCalls.getNewRecordsCount(content[0]?.id || 0, username)
-			.then((response) => {
-				setNewPostsCount(response?.data?.count);
-			});
+		// apiCalls.getNewRecordsCount(content[0]?.id || 0, username)
+		// 	.then((response) => {
+		// 		setNewPostsCount(response?.data?.count);
+		// 	});
 	};
 
-	useEffect(() => {
-		setLoading(true);
-		setError(null);
 
-		apiCalls.getRecords({username})
-			.then(processResponse)
-			.catch(processError)
-			.finally(() => setLoading(false));
-	}, [username]);
-
-
-	useInterval(checkNewPostsCount, 5000);
+	// useInterval(checkNewPostsCount, 5000);
 
 	const loadNextPage = () => {
-		setMorePostsLoading(true);
-
-		apiCalls.getPrevRecords(content[content.length - 1]?.id || 0, username)
-			.then(processResponse)
-			.catch(processError)
-			.finally(() => setMorePostsLoading(false));
-	}
-
-	const loadNewPosts = () => {
-		apiCalls.getNewRecords(content[0]?.id || 0, username)
-			.then((qwe) => {
-				setNewPostsCount(0);
-				setContent([...qwe?.data, ...content]);
-			});
+		// setMorePostsLoading(true);
+		//
+		// apiCalls.getPrevRecords(content[content.length - 1]?.id || 0, username)
+		// 	.then(processResponse)
+		// 	.catch(processError)
+		// 	.finally(() => setMorePostsLoading(false));
 	}
 
 
@@ -68,9 +67,9 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 			{(loggedInUser.username && submitForm) &&
 				<RecordSubmit
 					content={content}
-					setContent={setContent}/>}
+					setContent={null}/>}
 			{
-				loading ?
+				isLoading ?
 					<>
 						<RecordSkeleton text/>
 						<RecordSkeleton className={"mt-20"} image text/>
@@ -78,7 +77,7 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 					:
 					<>
 						<>
-							<LoadPostsButton onClick={loadNewPosts} newPostsCount={newPostsCount}/>
+							<LoadPostsButton onClick={loadNextPage} newPostsCount={newPostsCount}/>
 						</>
 						{
 							content?.length
@@ -87,7 +86,7 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 									{content?.map((post) => (
 										<RecordItem post={post}
 													content={content}
-													setContent={setContent}
+													setContent={null}
 													removeAction={loggedInUser.username === post.user.username}
 													key={post.id}/>
 									))}
@@ -95,8 +94,8 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 										!pagination.last &&
 										<div style={{marginTop: 25, textAlign: "center"}}>
 											<LoadingButton
-												onClick={loadNextPage}
-												loading={morePostsLoading}
+												onClick={() => loadNewPosts2.mutate()}
+												loading={loadNewPosts2.isLoading}
 												variant="contained"
 												size={"large"}
 												disableElevation
@@ -113,7 +112,8 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 
 			}
 			{
-				error && <Alert className={"mt-20"} severity="error">{error}</Alert>
+				(error || loadNewPosts2.isError) &&
+				<Alert className={"mt-20"} severity="error">{error || loadNewPosts2.error}</Alert>
 			}
 		</div>
 	);

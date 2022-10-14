@@ -11,8 +11,11 @@ import reportWebVitals from './reportWebVitals';
 import configureStore from "./redux/configureStore";
 
 import {createTheme, ThemeProvider} from "@mui/material";
+import {QueryClient} from "@tanstack/react-query";
+import {QueryClientProvider} from "@tanstack/react-query";
 
 const store = configureStore();
+const queryClient = new QueryClient()
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const theme = createTheme({
@@ -31,7 +34,9 @@ root.render(
 	<Provider store={store}>
 		<BrowserRouter>
 			<ThemeProvider theme={theme}>
-				<App/>
+				<QueryClientProvider client={queryClient}>
+					<App/>
+				</QueryClientProvider>
 			</ThemeProvider>
 		</BrowserRouter>
 	</Provider>

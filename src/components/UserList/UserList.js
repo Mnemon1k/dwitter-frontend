@@ -25,8 +25,9 @@ const UserList = () => {
 					setSize(response?.data?.size);
 				})
 				.catch((error) => {
+					console.log(error?.message);
 					setRequestError(error?.response?.data?.message ||
-						error?.response?.data ||
+						error?.response?.data?.message ||
 						error?.message ||
 						"Server error while loading users"
 					);
@@ -90,7 +91,7 @@ const UserList = () => {
 			{
 				requestError
 				&&
-				<Alert severity="error">{requestError}</Alert>
+				<Alert className={"mt-20"} severity="error">{requestError}</Alert>
 			}
 		</div>
 	);
