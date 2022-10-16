@@ -1,6 +1,6 @@
 import {BottomNavigation, BottomNavigationAction} from "@mui/material";
 
-const LoadPostsButton = ({newPostsCount, ...props}) => {
+const LoadPostsButton = ({newPostsCount = 0, ...props}) => {
 	const text = newPostsCount > 1 ? `There are ${newPostsCount} new posts` : "There is 1 new post";
 
 	return newPostsCount > 0 && (

@@ -8,11 +8,10 @@ import {Provider} from "react-redux";
 
 import './index.scss';
 import reportWebVitals from './reportWebVitals';
-import configureStore from "./redux/configureStore";
 
 import {createTheme, ThemeProvider} from "@mui/material";
+import {store} from "./redux/store/store";
 
-const store = configureStore();
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 const theme = createTheme({

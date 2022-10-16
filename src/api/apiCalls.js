@@ -4,6 +4,7 @@ export const BASE_PATH = "/api/1.0";
 export const USERS_API_PATH = BASE_PATH + "/users";
 export const RECORDS_API_PATH = BASE_PATH + "/records";
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
 
 // Auth
 
@@ -45,7 +46,7 @@ export let removeRecord = (recordId) => {
 	return axios.delete(RECORDS_API_PATH + "/" + recordId);
 };
 
-export let getRecords = (params = {}) => {
+export let getRecords = async (params = {}) => {
 	const {
 		username,
 		page = 0,
@@ -56,14 +57,14 @@ export let getRecords = (params = {}) => {
 	// if username not set path will bt /records?...pagintaionParams - and we get records with pagination
 	const path = username ? USERS_API_PATH + "/" + username + "/records" : RECORDS_API_PATH;
 
-	return axios.get(path + `?page=${page}&size=${size}&sort=id,desc`);
+	return await axios.get(path + `?page=${page}&size=${size}&sort=id,desc`);
 };
 
-export let getPrevRecords = (id, username) => {
+export let getPrevRecords = async (id, username) => {
 	const query = "?direction=before&page=0&size=5&sort=id,desc";
 	const basePath = `/api/1.0/records/${id}` + query;
 	const userPath = `/api/1.0/users/${username}/records/${id}` + query;
-	return axios.get(username ? userPath : basePath);
+	return await axios.get(username ? userPath : basePath);
 };
 
 export let getNewRecords = (id, username) => {

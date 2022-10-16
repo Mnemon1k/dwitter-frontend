@@ -6,7 +6,7 @@ import {createRecord} from "../../api/apiCalls";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from '@mui/icons-material/Send';
 
-const RecordSubmit = ({user, content, setContent}) => {
+const RecordSubmit = () => {
 	const [focused, setFocused] = useState(false);
 	const [post, setPost] = useState("");
 	const [loading, setLoading] = useState(false);
@@ -19,7 +19,7 @@ const RecordSubmit = ({user, content, setContent}) => {
 		createRecord({content: post})
 			.then(({data}) => {
 				setPost("");
-				setContent([data, ...content]);
+				// setContent([data, ...content]);
 				setFocused(false);
 			})
 			.catch((data) => {
@@ -60,7 +60,7 @@ const RecordSubmit = ({user, content, setContent}) => {
 							style={{marginRight: 14, marginTop: -8}}
 							data-testid={"UserImage"}
 							sx={{width: 56, height: 56}}
-							src={user?.image && "/images/profile/" + user?.image}
+							// src={user?.image && "/images/profile/" + user?.image}
 						/>
 					</ListItemAvatar>
 					<div style={{width: "100%"}}>
@@ -107,9 +107,4 @@ const RecordSubmit = ({user, content, setContent}) => {
 	);
 };
 
-const mapStateToProps = (state) => {
-	return {
-		user: state
-	};
-}
-export default connect(mapStateToProps)(RecordSubmit);
+export default RecordSubmit;
