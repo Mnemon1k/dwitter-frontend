@@ -1,40 +1,53 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {Container, Stack, TextField} from "@mui/material";
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
 import "./SignupPage.css"
 import LoadingButton from '@mui/lab/LoadingButton';
 import {useNavigate} from "react-router-dom";
-import {connect} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 import {signupHandler} from "../../redux/authActions";
+import {loginThunk, signupThunk} from "../../redux/auth/authThunk";
+import {setSignupError} from "../../redux/auth/authSlice";
 
 export function SignupPage({actions}) {
 	const [displayName, setDisplayName] = useState("");
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
 	const [passwordRepeat, setPasswordRepeat] = useState("");
-	const [singupPending, setSingupPending] = useState(false);
-	const [validationErrors, setValidationErrors] = useState({});
 	const navigate = useNavigate();
+
+	const dispatch = useDispatch();
+	const {signupLoading, loginLoading, signupErrors, isLoggedIn} = useSelector((state) => state.auth);
 
 	const formSubmit = () => {
 		const user = {username, displayName, password, passwordRepeat};
-		setSingupPending(true);
-		actions?.postSignup(user)
-			.then((data) => {
-				setValidationErrors({});
-				setUsername("");
-				setDisplayName("");
-				setPassword("");
-				setPasswordRepeat("");
-				navigate("/");
-			})
-			.catch(({response}) => {
-				if (response?.data?.validationErrors) {
-					setValidationErrors(response.data.validationErrors);
+		dispatch(signupThunk(user))
+			.then((action) => {
+				if (action.type === "auth/register/fulfilled") {
+					dispatch(loginThunk({
+						username: action?.meta?.arg?.username,
+						password: action?.meta?.arg?.password
+					}))
+						.then((action) => {
+							if (action.type === "auth/login/fulfilled")
+								navigate("/");
+						});
 				}
-			})
-			.finally(() => setSingupPending(false));
+			});
 	};
+
+	useEffect(() => {
+		if (isLoggedIn)
+			navigate("/");
+
+		return () => {
+			setUsername("");
+			setDisplayName("");
+			setPassword("");
+			setPasswordRepeat("");
+			dispatch(setSignupError(null));
+		};
+	}, []);
 
 	return (
 		<Container data-testid={"signuppage"} maxWidth="xs" className="full-height-centered">
@@ -48,14 +61,14 @@ export function SignupPage({actions}) {
 					size="small"
 					value={username}
 					onChange={(e) => {
-						setUsername(e.target.value);
-						delete validationErrors.username;
-						setValidationErrors({...validationErrors, username: null})
+						setUsername(e?.target?.value);
+						if (signupErrors?.username)
+							dispatch(setSignupError({...signupErrors, username: null}));
 					}}
 					name="username"
 					label="Your username"
-					helperText={validationErrors?.username}
-					error={!!validationErrors?.username}
+					helperText={signupErrors?.username}
+					error={!!signupErrors?.username}
 				/>
 				<TextField
 					label="Your display name"
@@ -63,12 +76,13 @@ export function SignupPage({actions}) {
 					size="small"
 					value={displayName}
 					onChange={(e) => {
-						setDisplayName(e.target.value);
-						setValidationErrors({...validationErrors, displayName: null});
+						setDisplayName(e?.target?.value);
+						if (signupErrors?.displayName)
+							dispatch(setSignupError({...signupErrors, displayName: null}));
 					}}
 					name="displayName"
-					helperText={validationErrors?.displayName}
-					error={!!validationErrors?.displayName}
+					helperText={signupErrors?.displayName}
+					error={!!signupErrors?.displayName}
 				/>
 				<TextField
 					fullWidth
@@ -76,17 +90,17 @@ export function SignupPage({actions}) {
 					type="password"
 					value={password}
 					onChange={(e) => {
-						setPassword(e.target.value)
-						setValidationErrors({
-							...validationErrors,
+						setPassword(e?.target?.value)
+						dispatch(setSignupError({
+							...signupErrors,
 							password: null,
-							passwordRepeat: passwordRepeat === e.target.value ? null : "Does not match to password."
-						})
+							passwordRepeat: passwordRepeat === e?.target?.value ? null : "Does not match to password."
+						}));
 					}}
 					name="password"
 					label="Your password"
-					helperText={validationErrors?.password}
-					error={!!validationErrors?.password}
+					helperText={signupErrors?.password}
+					error={!!signupErrors?.password}
 				/>
 				<TextField
 					fullWidth
@@ -94,21 +108,21 @@ export function SignupPage({actions}) {
 					type="password"
 					value={passwordRepeat}
 					onChange={(e) => {
-						setPasswordRepeat(e.target.value)
-						setValidationErrors({
-							...validationErrors,
-							passwordRepeat: password === e.target.value ? null : "Does not match to password."
-						})
+						setPasswordRepeat(e?.target?.value)
+						dispatch(setSignupError({
+							...signupErrors,
+							passwordRepeat: password === e?.target?.value ? null : "Does not match to password."
+						}));
 					}}
 					name="passwordRepeat"
 					label="Repeat your password"
-					helperText={validationErrors?.passwordRepeat}
-					error={!!validationErrors?.passwordRepeat}
+					helperText={signupErrors?.passwordRepeat}
+					error={!!signupErrors?.passwordRepeat}
 				/>
 
 				<LoadingButton
 					onClick={formSubmit}
-					loading={singupPending}
+					loading={signupLoading || loginLoading}
 					size="large"
 					disabled={!((password === passwordRepeat) && (password !== "" || passwordRepeat !== ""))}
 					loadingIndicator="Loading…"

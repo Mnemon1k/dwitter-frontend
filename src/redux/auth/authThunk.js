@@ -13,14 +13,14 @@ export const loginThunk = createAsyncThunk(
 	}
 );
 
-export const registerThunk = createAsyncThunk(
+export const signupThunk = createAsyncThunk(
 	"auth/register",
-	(data, store) => {
+	async (data, store) => {
 		try {
-			return signup(data);
+			return await signup(data);
 		} catch (error) {
-			console.log(error?.response?.data?.message || error?.message || error);
-			throw Error(error?.response?.data?.message || error?.message || error);
+			console.log(error.response);
+			throw Error(JSON.stringify(error?.response?.data?.validationErrors) || error?.response?.data?.message || error?.message);
 		}
 	}
 );

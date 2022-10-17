@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {useNavigate} from "react-router-dom";
 
 import {loginThunk} from "../../redux/auth/authThunk";
+import {setLoginError} from "../../redux/auth/authSlice";
 
 export const LoginPage = () => {
 	const [username, setUsername] = useState("");
@@ -29,6 +30,12 @@ export const LoginPage = () => {
 	useEffect(() => {
 		setUsername("");
 		setPassword("");
+
+		return () => {
+			setUsername("");
+			setPassword("");
+			dispatch(setLoginError(null));
+		};
 	}, [auth.user]);
 
 	return (

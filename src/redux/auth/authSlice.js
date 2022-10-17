@@ -1,5 +1,5 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {loginThunk} from "./authThunk";
+import {loginThunk, signupThunk} from "./authThunk";
 import {clearAuthorizationHeaderForToolkit, setAuthorizationHeaderForToolkit} from "../../api/apiCalls";
 import {updateUserThunk} from "../user/userThunk";
 
@@ -12,7 +12,10 @@ let initialState = {
 	},
 	loginLoading: false,
 	isLoggedIn: false,
-	loginError: null
+	loginError: null,
+
+	signupLoading: false,
+	signupErrors: null
 };
 
 let localStorageAuth = localStorage.getItem("dwitter-auth");
@@ -37,6 +40,12 @@ export const authSlice = createSlice({
 			localStorage.removeItem("dwitter-auth");
 			localStorage.removeItem("dwitter-user");
 			clearAuthorizationHeaderForToolkit();
+		},
+		setSignupError: (state, {payload}) => {
+			state.signupErrors = payload;
+		},
+		setLoginError: (state, {payload}) => {
+			state.loginError = payload;
 		}
 	},
 	extraReducers: (builder) => {
@@ -46,6 +55,7 @@ export const authSlice = createSlice({
 				state.user = action?.payload?.data;
 				localStorage.setItem("dwitter-user", JSON.stringify(action?.payload?.data));
 			})
+
 			// loginThunk
 			.addCase(loginThunk.pending, (state) => {
 				state.loginLoading = true;
@@ -66,10 +76,28 @@ export const authSlice = createSlice({
 				state.loginLoading = false;
 				state.loginError = action?.error?.message;
 				console.log(action);
+			})
+
+			// signupThunk
+			.addCase(signupThunk.pending, (state) => {
+				state.signupLoading = true;
+				state.signupErrors = null;
+			})
+			.addCase(signupThunk.fulfilled, (state, action) => {
+				state.signupLoading = false;
+			})
+			.addCase(signupThunk.rejected, (state, {error}) => {
+				state.signupLoading = false;
+				try {
+					state.signupErrors = JSON.parse(error?.message);
+				} catch (e) {
+					state.signupErrors = error?.message;
+				}
+				console.log(error);
 			});
 	},
 });
 
-export const {logout} = authSlice.actions;
+export const {logout, setSignupError, setLoginError} = authSlice.actions;
 
 export const authReducer = authSlice.reducer;
