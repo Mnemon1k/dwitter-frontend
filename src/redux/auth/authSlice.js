@@ -1,15 +1,14 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {loginThunk} from "./authThunk";
-import {setAuthorizationHeaderForToolkit} from "../../api/apiCalls";
-import {setNewRecordError} from "../records/recordsSlice";
+import {clearAuthorizationHeaderForToolkit, setAuthorizationHeaderForToolkit} from "../../api/apiCalls";
+import {updateUserThunk} from "../user/userThunk";
 
 let initialState = {
 	user: {
 		id: 0,
 		username: "",
 		displayName: "",
-		image: "",
-		password: "",
+		image: ""
 	},
 	loginLoading: false,
 	isLoggedIn: false,
@@ -23,7 +22,7 @@ if (localStorageAuth && localStorageUser) {
 	try {
 		initialState.user = JSON.parse(localStorageUser);
 		initialState.isLoggedIn = true;
-		setAuthorizationHeaderForToolkit(localStorageAuth, true);
+		setAuthorizationHeaderForToolkit(localStorageAuth);
 	} catch (e) {
 	}
 }
@@ -37,10 +36,16 @@ export const authSlice = createSlice({
 			state.isLoggedIn = false;
 			localStorage.removeItem("dwitter-auth");
 			localStorage.removeItem("dwitter-user");
+			clearAuthorizationHeaderForToolkit();
 		}
 	},
 	extraReducers: (builder) => {
 		builder
+			// updateUserThunk
+			.addCase(updateUserThunk.fulfilled, (state, action) => {
+				state.user = action?.payload?.data;
+				localStorage.setItem("dwitter-user", JSON.stringify(action?.payload?.data));
+			})
 			// loginThunk
 			.addCase(loginThunk.pending, (state) => {
 				state.loginLoading = true;
@@ -51,10 +56,11 @@ export const authSlice = createSlice({
 				state.isLoggedIn = true;
 				state.user = action?.payload?.data;
 
-				localStorage.setItem("dwitter-auth",
-					btoa(action.meta.arg.username + ":" + action.meta.arg.password)
-				);
+				const authValue = btoa(action.meta.arg.username + ":" + action.meta.arg.password);
+
+				localStorage.setItem("dwitter-auth", authValue);
 				localStorage.setItem("dwitter-user", JSON.stringify(action?.payload?.data));
+				setAuthorizationHeaderForToolkit(authValue);
 			})
 			.addCase(loginThunk.rejected, (state, action) => {
 				state.loginLoading = false;

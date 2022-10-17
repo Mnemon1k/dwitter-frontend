@@ -4,7 +4,7 @@ import Button from "@mui/material/Button";
 import {useState} from "react";
 import {removeRecord} from "../../api/apiCalls";
 
-const RecordRemoveButton = ({id, content, setContent}) => {
+const RecordRemoveButton = ({id}) => {
 	const [anchorEl, setAnchorEl] = useState(null);
 	const handleClose = () => setAnchorEl(null);
 	const [loading, setLoading] = useState(false);
@@ -17,7 +17,7 @@ const RecordRemoveButton = ({id, content, setContent}) => {
 		setLoading(true);
 		removeRecord(id)
 			.then(() => {
-				setContent(content.filter(post => post.id !== id));
+				// setContent(content.filter(post => post.id !== id));
 			})
 			.catch((error) => {
 				alert(error?.response?.data?.message ? error?.response?.data?.message : error?.message);

@@ -1,6 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {addRecordThunk, fetchPrevRecordsThunk, fetchRecordsThunk} from "./recordsThunk";
-import {authSlice, logout} from "../auth/authSlice";
+import {logout} from "../auth/authSlice";
+import {updateUserThunk} from "../user/userThunk";
 
 const initialState = {
 	records: [],
@@ -22,6 +23,15 @@ export const recordsSlice = createSlice({
 	},
 	extraReducers: (builder) => {
 		builder
+			// updateUserThunk
+			.addCase(updateUserThunk.fulfilled, (state, action) => {
+				state.records = state.records.map((record) => {
+					if (record.user.id === action?.payload?.data?.id) {
+						return {...record, user: action?.payload?.data}
+					}
+					return record
+				});
+			})
 			// logout
 			.addCase(logout, (state) => {
 				state.newRecordError = null;

@@ -7,13 +7,14 @@ import {CancelSharp} from "@mui/icons-material";
 import {Stack, TextField} from "@mui/material";
 
 const UserEditForm = ({
-						  user, errors, setErrors, onFileSelect, onClickUpdate, userUpdating, toggleEditMode
+						  user, errors, resetError, onFileSelect, onClickUpdate, userUpdating, toggleEditMode
 					  }) => {
 	const [newName, setNewName] = useState("");
 
 	useEffect(() => {
 		setNewName(user.displayName);
 	}, [user.displayName]);
+
 	return (
 		<Stack spacing={2}>
 			<TextField
@@ -25,7 +26,7 @@ const UserEditForm = ({
 				name="displayName"
 				onChange={event => {
 					setNewName(event.target.value);
-					setErrors({...errors, displayName: ""});
+					resetError({...errors, displayName: ""});
 				}}
 				label="New display name"
 			/>

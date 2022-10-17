@@ -9,13 +9,7 @@ const RecordItem = ({post, removeAction}) => {
 	return (
 		<Card elevation={2} sx={{mt: 4}}>
 			<CardHeader
-				action={
-					removeAction &&
-					<RecordRemoveButton
-						// content={content}
-						// setContent={setContent}
-						id={post.id}/>
-				}
+				action={removeAction && <RecordRemoveButton id={post.id}/>}
 				avatar={
 					<Avatar
 						sx={{width: 44, height: 44}}

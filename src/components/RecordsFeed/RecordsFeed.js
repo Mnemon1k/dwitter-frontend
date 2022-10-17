@@ -33,7 +33,7 @@ const RecordsFeed = ({username, submitForm}) => {
 
 	return (
 		<div className={"mt-20"}>
-			{((username === user.username) || submitForm) && <RecordSubmit/>}
+			{((username === user.username) || (submitForm && isLoggedIn)) && <RecordSubmit/>}
 			{recordsLoading ?
 				<><RecordSkeleton text/><RecordSkeleton className={"mt-20"} image text/></>
 				:

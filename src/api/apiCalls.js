@@ -87,10 +87,10 @@ export const setAuthorizationHeader = ({username, password, isLoggedIn}) => {
 	}
 };
 
-export const setAuthorizationHeaderForToolkit = (value, isLoggedIn) => {
-	if (isLoggedIn) {
-		axios.defaults.headers.common['Authorization'] = `Basic ${value}`
-	} else {
-		delete axios.defaults.headers.common['Authorization'];
-	}
+export const setAuthorizationHeaderForToolkit = (value) => {
+	axios.defaults.headers.common['Authorization'] = `Basic ${value}`
+};
+
+export const clearAuthorizationHeaderForToolkit = () => {
+	delete axios.defaults.headers.common['Authorization'];
 };
