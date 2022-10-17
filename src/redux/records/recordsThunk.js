@@ -1,5 +1,5 @@
 import {createAsyncThunk} from "@reduxjs/toolkit/dist";
-import {getPrevRecords, getRecords} from "../../api/apiCalls";
+import {createRecord, getPrevRecords, getRecords} from "../../api/apiCalls";
 
 export const fetchRecordsThunk = createAsyncThunk(
 	"records/fetch",
@@ -21,6 +21,18 @@ export const fetchPrevRecordsThunk = createAsyncThunk(
 		} catch (error) {
 			console.log(error?.response?.data?.message || error?.message || error);
 			throw Error(error?.response?.data?.message || error?.message);
+		}
+	}
+);
+
+export const addRecordThunk = createAsyncThunk(
+	"records/add",
+	async (post, store) => {
+		try {
+			return await createRecord(post);
+		} catch (error) {
+			console.log(error);
+			throw Error(JSON.stringify(error?.response?.data?.validationErrors) || error?.response?.data?.message || error?.message);
 		}
 	}
 );

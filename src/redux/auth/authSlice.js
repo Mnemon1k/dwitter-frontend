@@ -1,6 +1,7 @@
 import {createSlice} from "@reduxjs/toolkit";
 import {loginThunk} from "./authThunk";
-import {setAuthorizationHeader, setAuthorizationHeaderForToolkit} from "../../api/apiCalls";
+import {setAuthorizationHeaderForToolkit} from "../../api/apiCalls";
+import {setNewRecordError} from "../records/recordsSlice";
 
 let initialState = {
 	user: {
@@ -22,7 +23,7 @@ if (localStorageAuth && localStorageUser) {
 	try {
 		initialState.user = JSON.parse(localStorageUser);
 		initialState.isLoggedIn = true;
-		setAuthorizationHeaderForToolkit(localStorageAuth);
+		setAuthorizationHeaderForToolkit(localStorageAuth, true);
 	} catch (e) {
 	}
 }
