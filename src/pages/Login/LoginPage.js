@@ -11,39 +11,25 @@ import {loginThunk} from "../../redux/auth/authThunk";
 export const LoginPage = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
-	const [apiError, setApiError] = useState(null);
-	const [loginPending, setLoginPending] = useState(false);
 	const navigate = useNavigate();
-
 	const dispatch = useDispatch();
-	const auth = useSelector((state) => state.auth);
 
+	const auth = useSelector((state) => state.auth);
+	const formSubmit = () => dispatch(loginThunk({username, password}))
+		.then((action) => {
+			if (action.type === "auth/login/fulfilled")
+				navigate("/")
+		});
+
+	useEffect(() => {
+		if (auth.isLoggedIn)
+			navigate("/");
+	}, []);
 
 	useEffect(() => {
 		setUsername("");
 		setPassword("");
 	}, [auth.user]);
-
-
-	const formSubmit = () => {
-		dispatch(loginThunk({
-			username,
-			password
-		}))
-		// actions.postLogin({
-		// 	username,
-		// 	password
-		// })
-		// 	.then((response) => {
-		// 		navigate("/");
-		// 	})
-		// 	.catch((error) => {
-		// 		setApiError(error?.response?.data?.message);
-		// 	})
-		// 	.finally(() => {
-		// 		setLoginPending(false);
-		// 	});
-	};
 
 	return (
 		<Container data-testid={"loginpage"} maxWidth="xs" className="full-height-centered">

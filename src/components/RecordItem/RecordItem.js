@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import {Link} from "react-router-dom";
 import RecordRemoveButton from "../RecordRemoveButton/RecordRemoveButton";
 
-const RecordItem = ({post, removeAction, content, setContent}) => {
+const RecordItem = ({post, removeAction}) => {
 	let date = new Date(post.date);
 
 	return (
@@ -12,8 +12,8 @@ const RecordItem = ({post, removeAction, content, setContent}) => {
 				action={
 					removeAction &&
 					<RecordRemoveButton
-						content={content}
-						setContent={setContent}
+						// content={content}
+						// setContent={setContent}
 						id={post.id}/>
 				}
 				avatar={

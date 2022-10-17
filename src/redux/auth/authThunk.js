@@ -3,9 +3,9 @@ import {login, signup} from "../../api/apiCalls";
 
 export const loginThunk = createAsyncThunk(
 	"auth/login",
-	(credentials, store) => {
+	async (credentials, store) => {
 		try {
-			return login(credentials);
+			return await login(credentials);
 		} catch (error) {
 			console.log(error?.response?.data?.message || error?.message || error);
 			throw Error(error?.response?.data?.message || error?.message || error);

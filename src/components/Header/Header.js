@@ -1,4 +1,4 @@
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 
 import MenuLink from "./MenuLink";
 import {Link} from "react-router-dom";
@@ -9,20 +9,25 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import CenterFocusStrongIcon from "@mui/icons-material/CenterFocusStrong";
 
-import "./Header.scss"
 import {Avatar, Container, IconButton, Menu, MenuItem, Tooltip} from "@mui/material";
 import {useState} from "react";
 import {ArrowDropDown} from "@mui/icons-material";
+import {logout} from "../../redux/auth/authSlice";
 
-function Header({user, dispatch}) {
-	const onClickLogout = () => dispatch({type: "LOGOUT_SUCCESS"});
+import "./Header.scss"
+
+function Header() {
+	const onClickLogout = () => dispatch(logout());
 
 	const [anchorElUser, setAnchorElUser] = useState(null);
 	const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
 	const handleCloseUserMenu = () => setAnchorElUser(null);
 
+	const {user, isLoggedIn} = useSelector((state) => state.auth);
+	const dispatch = useDispatch();
+
 	const getUserMenu = () => {
-		if (user.isLoggedIn)
+		if (isLoggedIn)
 			return (<Box>
 				<Tooltip title="Open menu">
 					<IconButton color={"primary"} onClick={handleOpenUserMenu} sx={{p: 0}}>
@@ -85,12 +90,4 @@ function Header({user, dispatch}) {
 	);
 }
 
-function mapStateToProps(state) {
-	return {
-		user: state
-	};
-}
-
-export default connect(
-	mapStateToProps,
-)(Header);
+export default Header;

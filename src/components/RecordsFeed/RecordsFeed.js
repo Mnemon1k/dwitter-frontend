@@ -35,6 +35,7 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 		recordsLoadingError,
 		pagination
 	} = useSelector((state) => state.records);
+	const {user, isLoggedIn} = useSelector((state) => state.auth);
 	const dispatch = useDispatch();
 
 	const loadNextPage = () => {
@@ -50,8 +51,7 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 
 	return (
 		<div className={"mt-20"}>
-			{(loggedInUser.username && submitForm) &&
-				<RecordSubmit/>}
+			{(isLoggedIn && submitForm) && <RecordSubmit/>}
 			{recordsLoading ?
 				<><RecordSkeleton text/><RecordSkeleton className={"mt-20"} image text/></>
 				:
@@ -63,8 +63,6 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 						<>
 							{records?.map((post) => (
 								<RecordItem post={post}
-											content={records}
-									// setContent={setContent}
 											removeAction={loggedInUser.username === post.user.username}
 											key={post.id}/>
 							))}

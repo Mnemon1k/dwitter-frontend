@@ -24,29 +24,24 @@ export let signup = (user) => {
 export let updateUser = (userId, body) => {
 	return axios.put(USERS_API_PATH + '/' + userId, body);
 };
-
 export let getUsers = (params) => {
 	const defaultPage = 0;
 	const defaultPageSize = 3;
 	return axios.get(USERS_API_PATH + `?page=${params?.page || defaultPage}&size=${params?.size || defaultPageSize}`);
 };
-
 export let getUser = (username) => {
 	return axios.get(USERS_API_PATH + `/${username}`);
 };
-
 
 //Records
 
 export let createRecord = (record) => {
 	return axios.post(RECORDS_API_PATH, record);
 };
-
 export let removeRecord = (recordId) => {
 	return axios.delete(RECORDS_API_PATH + "/" + recordId);
 };
-
-export let getRecords = async (params = {}) => {
+export let getRecords = (params = {}) => {
 	const {
 		username,
 		page = 0,
@@ -57,14 +52,14 @@ export let getRecords = async (params = {}) => {
 	// if username not set path will bt /records?...pagintaionParams - and we get records with pagination
 	const path = username ? USERS_API_PATH + "/" + username + "/records" : RECORDS_API_PATH;
 
-	return await axios.get(path + `?page=${page}&size=${size}&sort=id,desc`);
+	return axios.get(path + `?page=${page}&size=${size}&sort=id,desc`);
 };
 
-export let getPrevRecords = async (id, username) => {
+export let getPrevRecords = (id, username) => {
 	const query = "?direction=before&page=0&size=5&sort=id,desc";
 	const basePath = `/api/1.0/records/${id}` + query;
 	const userPath = `/api/1.0/users/${username}/records/${id}` + query;
-	return await axios.get(username ? userPath : basePath);
+	return axios.get(username ? userPath : basePath);
 };
 
 export let getNewRecords = (id, username) => {
@@ -87,6 +82,14 @@ export let getNewRecordsCount = (id, username) => {
 export const setAuthorizationHeader = ({username, password, isLoggedIn}) => {
 	if (isLoggedIn) {
 		axios.defaults.headers.common['Authorization'] = `Basic ${btoa(username + ":" + password)}`
+	} else {
+		delete axios.defaults.headers.common['Authorization'];
+	}
+};
+
+export const setAuthorizationHeaderForToolkit = (value, isLoggedIn) => {
+	if (isLoggedIn) {
+		axios.defaults.headers.common['Authorization'] = `Basic ${value}`
 	} else {
 		delete axios.defaults.headers.common['Authorization'];
 	}

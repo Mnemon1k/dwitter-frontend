@@ -1,9 +1,8 @@
 import UserList from "../../components/UserList/UserList";
-import {Container, Grid, Typography} from "@mui/material";
-import {connect} from "react-redux";
 import RecordsFeed from "../../components/RecordsFeed/RecordsFeed";
+import {Container, Grid, Typography} from "@mui/material";
 
-function HomePage({user}) {
+function HomePage() {
 	return (
 		<Container className={"padding-md "}
 				   data-testid={"homepage"}
@@ -26,13 +25,7 @@ function HomePage({user}) {
 	);
 }
 
-function mapStateToProps(state) {
-	return {user: state};
-}
-
-export default connect(
-	mapStateToProps,
-)(HomePage);
+export default HomePage;
 
 
 
