@@ -65,6 +65,7 @@ export const recordsSlice = createSlice({
 			.addCase(fetchRecordsThunk.pending, (state) => {
 				state.recordsLoading = true;
 				state.recordsLoadingError = null;
+				state.newRecordError = null;
 			})
 			.addCase(fetchRecordsThunk.fulfilled, (state, {payload}) => {
 				state.recordsLoading = false;

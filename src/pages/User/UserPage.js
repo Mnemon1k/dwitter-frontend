@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {connect} from "react-redux";
+import {connect, useDispatch, useSelector} from "react-redux";
 
 import {getUser, updateUser} from "../../api/apiCalls";
 
@@ -12,15 +12,18 @@ import {Container, Alert, Typography, Grid} from "@mui/material";
 import RecordSubmit from "../../components/RecordSubmit/RecordSubmit";
 import RecordsFeed from "../../components/RecordsFeed/RecordsFeed";
 
-function UserPage({loggedInUser, dispatch}) {
+function UserPage() {
 	const params = useParams();
-	const [user, setUser] = useState({});
 	const [userLoading, setUserLoading] = useState(true);
 	const [userUpdating, setUserUpdating] = useState(false);
 	const [userLoadingError, setUserLoadingError] = useState("");
 	const [editMode, setEditMode] = useState(false);
 	const [image, setImage] = useState(null);
 	const [errors, setErrors] = useState({});
+
+
+	const {user, isLoggedIn} = useSelector((state) => state.auth);
+	const dispatch = useDispatch();
 
 	const toggleEditMode = () => {
 		setEditMode(!editMode);
@@ -50,7 +53,7 @@ function UserPage({loggedInUser, dispatch}) {
 			})
 			.then((response) => {
 				setEditMode(false);
-				setUser({...user, displayName, image: response.data.image});
+				// setUser({...user, displayName, image: response.data.image});
 				dispatch({
 					type: "UPDATE_SUCCESS",
 					payload: {user: {...user, displayName, image: response.data.image}}
@@ -71,7 +74,7 @@ function UserPage({loggedInUser, dispatch}) {
 			setUserLoading(true);
 			setUserLoadingError("");
 			getUser(params.username)
-				.then(response => setUser(response?.data))
+				// .then(response => setUser(response?.data))
 				.catch(error => setUserLoadingError(error?.response?.data?.message || "Server error"))
 				.finally(() => setUserLoading(false));
 		}
@@ -87,7 +90,6 @@ function UserPage({loggedInUser, dispatch}) {
 					  justifyContent={"space-between"}
 					  spacing={4}>
 					<Grid item md={6}>
-						{user.isLoggedIn && <RecordSubmit/>}
 						<RecordsFeed username={params.username}/>
 					</Grid>
 					<Grid item xs={12} md={6}>
@@ -106,7 +108,7 @@ function UserPage({loggedInUser, dispatch}) {
 											  onFileSelect={onFileSelect}
 											  errors={errors}
 											  setErrors={setErrors}
-											  isEditable={loggedInUser.username === user.username}
+											  isEditable={params.username === user.username}
 											  user={user}/>
 						}
 					</Grid>
@@ -117,10 +119,4 @@ function UserPage({loggedInUser, dispatch}) {
 	);
 }
 
-const mapStateToProps = (state) => {
-	return {
-		loggedInUser: state
-	}
-}
-
-export default connect(mapStateToProps)(UserPage);
+export default UserPage;

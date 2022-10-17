@@ -26,7 +26,7 @@ const RecordSubmit = () => {
 	};
 
 	const onPost = () => {
-		if (content.length > 3 && content.length < 333) {
+		if (content.length > 10 && content.length < 333) {
 			submitPost();
 		} else {
 			dispatch(setNewRecordError({content: "Post should be more than 10 and less than 333 letters."}));

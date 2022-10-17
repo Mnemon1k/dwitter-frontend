@@ -5,29 +5,11 @@ import RecordSkeleton from "../ReacordSkeleton/RecordSkeleton";
 import RecordItem from "../RecordItem/RecordItem";
 import LoadingButton from "@mui/lab/LoadingButton";
 import LoadPostsButton from "../LoadPostsButton/LoadPostsButton";
-import {connect, useDispatch, useSelector} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import RecordSubmit from "../RecordSubmit/RecordSubmit";
 import {fetchPrevRecordsThunk, fetchRecordsThunk} from "../../redux/records/recordsThunk";
 
-const RecordsFeed = ({username, loggedInUser, submitForm}) => {
-	// const [newPostsCount, setNewPostsCount] = useState(0);
-
-	// const checkNewPostsCount = () => {
-	// 	apiCalls.getNewRecordsCount(content[0]?.id || 0, username)
-	// 		.then((response) => {
-	// 			setNewPostsCount(response?.data?.count);
-	// 		});
-	// };
-
-	// const loadNewPosts = () => {
-	// 	apiCalls.getNewRecords(content[0]?.id || 0, username)
-	// 		.then((qwe) => {
-	// 			setNewPostsCount(0);
-	// 			setContent([...qwe?.data, ...content]);
-	// 		});
-	// }
-	// useInterval(checkNewPostsCount, 5000);
-
+const RecordsFeed = ({username, submitForm}) => {
 	const {
 		records,
 		recordsLoading,
@@ -51,7 +33,7 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 
 	return (
 		<div className={"mt-20"}>
-			{(isLoggedIn && submitForm) && <RecordSubmit/>}
+			{((username === user.username) || submitForm) && <RecordSubmit/>}
 			{recordsLoading ?
 				<><RecordSkeleton text/><RecordSkeleton className={"mt-20"} image text/></>
 				:
@@ -63,7 +45,7 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 						<>
 							{records?.map((post) => (
 								<RecordItem post={post}
-											removeAction={loggedInUser.username === post.user.username}
+											removeAction={user.username === post.user.username}
 											key={post.id}/>
 							))}
 							{
@@ -91,10 +73,4 @@ const RecordsFeed = ({username, loggedInUser, submitForm}) => {
 	);
 };
 
-
-const mapStateToProps = (state) => {
-	return {
-		loggedInUser: state
-	};
-}
-export default connect(mapStateToProps)(RecordsFeed);
+export default RecordsFeed;
