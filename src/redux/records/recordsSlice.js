@@ -1,15 +1,21 @@
 import {createSlice} from "@reduxjs/toolkit";
-import {addRecordThunk, fetchPrevRecordsThunk, fetchRecordsThunk} from "./recordsThunk";
+import {addRecordThunk, fetchPrevRecordsThunk, fetchRecordsThunk, removeRecordThunk} from "./recordsThunk";
 import {logout} from "../auth/authSlice";
 import {updateUserThunk} from "../user/userThunk";
 
 const initialState = {
 	records: [],
 	recordsLoading: true,
+	recordsLoadingError: null,
+
 	moreRecordsLoading: false,
+
 	newRecordLoading: false,
 	newRecordError: null,
-	recordsLoadingError: null,
+
+	removeRecordLoading: false,
+	removeRecordError: null,
+
 	pagination: {}
 };
 
@@ -32,6 +38,7 @@ export const recordsSlice = createSlice({
 					return record
 				});
 			})
+
 			// logout
 			.addCase(logout, (state) => {
 				state.newRecordError = null;
@@ -54,6 +61,20 @@ export const recordsSlice = createSlice({
 				} catch (e) {
 					state.newRecordError = error?.message;
 				}
+			})
+
+			// removeRecordThunk
+			.addCase(removeRecordThunk.pending, (state) => {
+				state.removeRecordLoading = true;
+				state.removeRecordError = null;
+			})
+			.addCase(removeRecordThunk.fulfilled, (state, payload) => {
+				state.removeRecordLoading = false;
+				state.records = state.records.filter(record => record.id !== payload?.meta?.arg);
+			})
+			.addCase(removeRecordThunk.rejected, (state, {error}) => {
+				state.removeRecordLoading = false;
+				alert(error?.message);
 			})
 
 			// fetchPrevRecordsThunk

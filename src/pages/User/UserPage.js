@@ -9,7 +9,7 @@ import UserCard from "../../components/UserCard/UserCard";
 import {Container, Alert, Typography, Grid} from "@mui/material";
 import RecordsFeed from "../../components/RecordsFeed/RecordsFeed";
 import {fetchUserThunk} from "../../redux/user/userThunk";
-import {resetState} from "../../redux/user/userSlice";
+import {resetUserState} from "../../redux/user/userSlice";
 
 function UserPage() {
 	const params = useParams();
@@ -23,7 +23,7 @@ function UserPage() {
 			dispatch(fetchUserThunk(params?.username));
 
 		return () => {
-			dispatch(resetState());
+			dispatch(resetUserState());
 		}
 	}, [params?.username]);
 

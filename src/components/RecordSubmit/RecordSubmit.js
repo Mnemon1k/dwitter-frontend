@@ -38,7 +38,9 @@ const RecordSubmit = () => {
 		dispatch(setNewRecordError(null));
 	};
 	const textareaOnChange = (event) => {
-		dispatch(setNewRecordError(null));
+		if (newRecordError) {
+			dispatch(setNewRecordError(null));
+		}
 		setContent(event.target.value);
 	};
 

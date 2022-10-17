@@ -34,7 +34,11 @@ const UserEditForm = ({
 				   multiple={false}
 				   type="file"
 				   onChange={onFileSelect}/>
-			{errors?.image && <Alert severity="error">{errors?.image}</Alert>}
+			{
+				(errors?.image || typeof errors === "string")
+				&&
+				<Alert severity="error">{errors || errors?.image}</Alert>
+			}
 			<Stack spacing={2}
 				   direction="row">
 				<LoadingButton

@@ -16,7 +16,9 @@ const RecordItem = ({post, removeAction}) => {
 						src={post?.user?.image && "/images/profile/" + post?.user?.image}
 					/>
 				}
-				title={<Link to={"/users/" + post?.user?.username}>{post?.user?.username}</Link>}
+				title={
+					<Link to={"/users/" + post?.user?.username}>{post?.user?.username}</Link>
+				}
 				subheader={date.toLocaleDateString() + " | " + date.toLocaleTimeString()}
 			/>
 

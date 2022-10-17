@@ -9,7 +9,7 @@ const initialState = {
 		displayName: "",
 		image: ""
 	},
-	
+
 	usersList: [],
 	usersListLoading: false,
 	usersListLoadingError: null,
@@ -24,7 +24,7 @@ const initialState = {
 };
 
 export const userSlice = createSlice({
-	name: "auth",
+	name: "user",
 	initialState,
 	reducers: {
 		setUserUpdatingError: (state, {payload}) => {
@@ -34,12 +34,8 @@ export const userSlice = createSlice({
 			state.isEditMode = payload;
 			state.userUpdatingError = null;
 		},
-		resetState: (state) => {
-			state.userLoading = false;
-			state.userLoadingError = null;
-			state.isEditMode = false;
-			state.userUpdating = false;
-			state.userUpdatingError = null;
+		resetUserState: (state) => {
+			Object.assign(state, {...initialState});
 		}
 	},
 	extraReducers: (builder) => {
@@ -85,6 +81,6 @@ export const userSlice = createSlice({
 	},
 });
 
-export const {setEditMode, resetState, setUserUpdatingError} = userSlice.actions;
+export const {setEditMode, resetUserState, setUserUpdatingError} = userSlice.actions;
 
 export const userReducer = userSlice.reducer;

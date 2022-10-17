@@ -1,30 +1,31 @@
 import {IconButton, Popover, Stack, Tooltip} from "@mui/material";
 import {DeleteOutline} from "@mui/icons-material";
 import Button from "@mui/material/Button";
+
 import {useState} from "react";
-import {removeRecord} from "../../api/apiCalls";
+import {useDispatch, useSelector} from "react-redux";
+
+import {fetchPrevRecordsThunk, removeRecordThunk} from "../../redux/records/recordsThunk";
 
 const RecordRemoveButton = ({id}) => {
+	const dispatch = useDispatch();
 	const [anchorEl, setAnchorEl] = useState(null);
-	const handleClose = () => setAnchorEl(null);
-	const [loading, setLoading] = useState(false);
 
-	const onBtnClick = (event) => {
-		setAnchorEl(event.currentTarget);
-	}
+	const handleClose = () => setAnchorEl(null);
+	const {removeRecordLoading, records} = useSelector((state) => state.records);
+
+	const onBtnClick = (event) => setAnchorEl(event.currentTarget);
 
 	const removeRecordHandler = () => {
-		setLoading(true);
-		removeRecord(id)
-			.then(() => {
-				// setContent(content.filter(post => post.id !== id));
-			})
-			.catch((error) => {
-				alert(error?.response?.data?.message ? error?.response?.data?.message : error?.message);
-			})
-			.finally(() => {
-				setLoading(false);
-				handleClose();
+		dispatch(removeRecordThunk(id))
+			.then((action) => {
+				console.log(records.length)
+				if (action.type === "records/remove/fulfilled" && records.length < 6) {
+					dispatch(fetchPrevRecordsThunk({
+						id: records[records.length - 1].id,
+						size: 1,
+					}));
+				}
 			});
 	}
 
@@ -49,9 +50,7 @@ const RecordRemoveButton = ({id}) => {
 					horizontal: 'right',
 				}}
 			>
-				<div
-					style={{padding: "14px", textAlign: "center"}}
-				>
+				<div style={{padding: "14px", textAlign: "center"}}>
 					<p style={{marginTop: 0}}>Are you sure?</p>
 					<Stack spacing={2}
 						   direction="row">
@@ -63,8 +62,8 @@ const RecordRemoveButton = ({id}) => {
 								onClick={removeRecordHandler}
 								variant="contained"
 								color={"error"}
-								disabled={loading}
-								size={"small"}>{loading ? "Loading..." : "Remove"}</Button>
+								disabled={removeRecordLoading}
+								size={"small"}>{removeRecordLoading ? "Loading..." : "Remove"}</Button>
 					</Stack>
 				</div>
 			</Popover>

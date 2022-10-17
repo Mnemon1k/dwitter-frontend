@@ -55,8 +55,8 @@ export let getRecords = (params = {}) => {
 	return axios.get(path + `?page=${page}&size=${size}&sort=id,desc`);
 };
 
-export let getPrevRecords = (id, username) => {
-	const query = "?direction=before&page=0&size=5&sort=id,desc";
+export let getPrevRecords = (id, username, size = 5) => {
+	const query = `?direction=before&page=0&size=${size}&sort=id,desc`;
 	const basePath = `/api/1.0/records/${id}` + query;
 	const userPath = `/api/1.0/users/${username}/records/${id}` + query;
 	return axios.get(username ? userPath : basePath);
