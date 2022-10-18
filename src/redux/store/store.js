@@ -11,7 +11,3 @@ export const store = configureStore({
 	},
 	middleware: getDefaultMiddleware => getDefaultMiddleware({serializableCheck: false})
 });
-
-store.subscribe(() => {
-	// localStorage.setItem("dwitter-user", JSON.stringify(store.getState().auth));
-});

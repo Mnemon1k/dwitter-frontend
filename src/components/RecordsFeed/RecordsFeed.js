@@ -1,15 +1,18 @@
-import React, {useEffect} from 'react';
-
-import {Alert} from "@mui/material";
-import RecordSkeleton from "../ReacordSkeleton/RecordSkeleton";
-import RecordItem from "../RecordItem/RecordItem";
-import LoadingButton from "@mui/lab/LoadingButton";
-import LoadPostsButton from "../LoadPostsButton/LoadPostsButton";
+import {useEffect} from 'react';
 import {useDispatch, useSelector} from "react-redux";
-import RecordSubmit from "../RecordSubmit/RecordSubmit";
+
 import {fetchPrevRecordsThunk, fetchRecordsThunk} from "../../redux/records/recordsThunk";
 
+import RecordItem from "../RecordItem/RecordItem";
+import RecordSubmit from "../RecordSubmit/RecordSubmit";
+import LoadPostsButton from "../LoadPostsButton/LoadPostsButton";
+import RecordsFeedSkeleton from "../Skeletons/RecordsFeedSkeleton";
+
+import {Alert} from "@mui/material";
+import LoadingButton from "@mui/lab/LoadingButton";
+
 const RecordsFeed = ({username, submitForm}) => {
+	const dispatch = useDispatch();
 	const {
 		records,
 		recordsLoading,
@@ -18,7 +21,7 @@ const RecordsFeed = ({username, submitForm}) => {
 		pagination
 	} = useSelector((state) => state.records);
 	const {user, isLoggedIn} = useSelector((state) => state.auth);
-	const dispatch = useDispatch();
+	const showSubmitForm = (username === user.username || submitForm) && isLoggedIn;
 
 	const loadNextPage = () => {
 		dispatch(fetchPrevRecordsThunk({
@@ -29,13 +32,14 @@ const RecordsFeed = ({username, submitForm}) => {
 
 	useEffect(() => {
 		dispatch(fetchRecordsThunk(username));
-	}, [username]);
+	}, [username, dispatch]);
 
 	return (
 		<div className={"mt-20"}>
-			{((username === user.username) || (submitForm && isLoggedIn)) && <RecordSubmit/>}
+			{(showSubmitForm && isLoggedIn) && <RecordSubmit/>}
+
 			{recordsLoading ?
-				<><RecordSkeleton text/><RecordSkeleton className={"mt-20"} image text/></>
+				<RecordsFeedSkeleton/>
 				:
 				<>
 					<LoadPostsButton/>
@@ -45,7 +49,7 @@ const RecordsFeed = ({username, submitForm}) => {
 						<>
 							{records?.map((post) => (
 								<RecordItem post={post}
-											removeAction={user.username === post.user.username}
+											removeAction={(user.username === post.user.username) && isLoggedIn}
 											key={post.id}/>
 							))}
 							{
@@ -64,8 +68,7 @@ const RecordsFeed = ({username, submitForm}) => {
 							}
 						</>
 						:
-						!recordsLoadingError &&
-						<Alert className={"mt-20"} severity="info">There is no posts</Alert>
+						!recordsLoadingError && <Alert className={"mt-20"} severity="info">There is no posts</Alert>
 					}
 				</>}
 			{recordsLoadingError && <Alert className={"mt-20"} severity="error">{recordsLoadingError}</Alert>}

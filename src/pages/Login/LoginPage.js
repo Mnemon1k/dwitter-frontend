@@ -25,7 +25,7 @@ export const LoginPage = () => {
 	useEffect(() => {
 		if (auth.isLoggedIn)
 			navigate("/");
-	}, []);
+	}, [navigate, auth.isLoggedIn]);
 
 	useEffect(() => {
 		setUsername("");
@@ -36,7 +36,7 @@ export const LoginPage = () => {
 			setPassword("");
 			dispatch(setLoginError(null));
 		};
-	}, [auth.user]);
+	}, [auth.user, dispatch]);
 
 	return (
 		<Container data-testid={"loginpage"} maxWidth="xs" className="full-height-centered">

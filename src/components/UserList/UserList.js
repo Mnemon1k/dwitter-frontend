@@ -1,8 +1,10 @@
 import {useCallback, useEffect, useState} from "react";
 import {getUsers} from "../../api/apiCalls";
+
 import {Alert, List, Pagination} from "@mui/material";
+
 import UserListItem from "./UserListItem";
-import RecordSkeleton from "../ReacordSkeleton/RecordSkeleton";
+import RecordSkeleton from "../Skeletons/RecordSkeleton";
 
 const UserList = () => {
 	const [page, setPage] = useState(0);
@@ -36,7 +38,7 @@ const UserList = () => {
 					setInitialLoad(false);
 				});
 		},
-		[size]
+		[size, totalPages]
 	);
 
 	const handlePageChange = (event) => {

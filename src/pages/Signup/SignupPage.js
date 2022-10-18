@@ -1,15 +1,17 @@
+import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+
 import {Container, Stack, TextField} from "@mui/material";
 import CenterFocusStrongIcon from '@mui/icons-material/CenterFocusStrong';
-import "./SignupPage.css"
 import LoadingButton from '@mui/lab/LoadingButton';
-import {useNavigate} from "react-router-dom";
-import {connect, useDispatch, useSelector} from "react-redux";
-import {signupHandler} from "../../redux/authActions";
+
 import {loginThunk, signupThunk} from "../../redux/auth/authThunk";
 import {setSignupError} from "../../redux/auth/authSlice";
 
-export function SignupPage({actions}) {
+import "./SignupPage.css"
+
+export function SignupPage() {
 	const [displayName, setDisplayName] = useState("");
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
@@ -20,8 +22,7 @@ export function SignupPage({actions}) {
 	const {signupLoading, loginLoading, signupErrors, isLoggedIn} = useSelector((state) => state.auth);
 
 	const formSubmit = () => {
-		const user = {username, displayName, password, passwordRepeat};
-		dispatch(signupThunk(user))
+		dispatch(signupThunk({username, displayName, password, passwordRepeat}))
 			.then((action) => {
 				if (action.type === "auth/register/fulfilled") {
 					dispatch(loginThunk({
@@ -47,7 +48,7 @@ export function SignupPage({actions}) {
 			setPasswordRepeat("");
 			dispatch(setSignupError(null));
 		};
-	}, []);
+	}, [navigate, isLoggedIn, dispatch]);
 
 	return (
 		<Container data-testid={"signuppage"} maxWidth="xs" className="full-height-centered">
@@ -136,13 +137,4 @@ export function SignupPage({actions}) {
 	);
 }
 
-const mapDispatchToProps = (dispatch) => {
-	return {
-		actions: {
-			postSignup: (user) => dispatch(signupHandler(user))
-		}
-	}
-
-}
-
-export default connect(null, mapDispatchToProps)(SignupPage);
+export default SignupPage;

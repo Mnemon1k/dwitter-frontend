@@ -4,8 +4,6 @@ export const BASE_PATH = "/api/1.0";
 export const USERS_API_PATH = BASE_PATH + "/users";
 export const RECORDS_API_PATH = BASE_PATH + "/records";
 
-const delay = ms => new Promise(res => setTimeout(res, ms));
-
 // Auth
 
 export let login = (credentials) => {

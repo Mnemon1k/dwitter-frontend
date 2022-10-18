@@ -17,24 +17,24 @@ import {logout} from "../../redux/auth/authSlice";
 import "./Header.scss"
 
 function Header() {
-	const onClickLogout = () => dispatch(logout());
-
+	const dispatch = useDispatch();
 	const [anchorElUser, setAnchorElUser] = useState(null);
+	const {user, isLoggedIn} = useSelector((state) => state.auth);
+	const {displayName, image, username} = user;
+
 	const handleOpenUserMenu = (event) => setAnchorElUser(event.currentTarget);
 	const handleCloseUserMenu = () => setAnchorElUser(null);
+	const onClickLogout = () => dispatch(logout());
 
-	const {user, isLoggedIn} = useSelector((state) => state.auth);
-	const dispatch = useDispatch();
+	const avatarSrc = image ? "/images/profile/" + image : null;
 
 	const getUserMenu = () => {
 		if (isLoggedIn)
 			return (<Box>
 				<Tooltip title="Open menu">
 					<IconButton color={"primary"} onClick={handleOpenUserMenu} sx={{p: 0}}>
-						<Avatar data-testid={"header-profile-image"}
-								src={user?.image && "/images/profile/" + user?.image}/>
-						<Typography sx={{marginLeft: 1, fontSize: "14px"}}
-									color={"white"}>{user?.displayName}</Typography>
+						<Avatar data-testid={"header-profile-image"} src={avatarSrc}/>
+						<Typography sx={{marginLeft: 1, fontSize: "14px"}} color={"white"}>{displayName}</Typography>
 						<ArrowDropDown sx={{color: "white"}}/>
 					</IconButton>
 				</Tooltip>
@@ -53,7 +53,7 @@ function Header() {
 					  }}
 					  open={Boolean(anchorElUser)}
 					  onClose={handleCloseUserMenu}>
-					<Link data-testid={"profile-link"} to={"/users/" + user.username}>
+					<Link data-testid={"profile-link"} to={"/users/" + username}>
 						<MenuItem onClick={handleCloseUserMenu}> My profile </MenuItem>
 					</Link>
 					<MenuItem onClick={() => {

@@ -1,13 +1,14 @@
-import Button from "@mui/material/Button";
-import {Edit} from "@mui/icons-material";
-import {Avatar, Card, CardContent} from "@mui/material";
-
-import UserCardInfo from "../UserCardInfo/UserCardInfo";
-import UserEditForm from "../UserEditForm/UserEditForm";
-import {useDispatch, useSelector} from "react-redux";
 import {setEditMode, setUserUpdatingError} from "../../redux/user/userSlice";
+import {useDispatch, useSelector} from "react-redux";
 import {updateUserThunk} from "../../redux/user/userThunk";
 import {useState} from "react";
+
+import Button from "@mui/material/Button";
+import {Edit} from "@mui/icons-material";
+
+import {Avatar, Card, CardContent} from "@mui/material";
+import UserCardInfo from "../UserCardInfo/UserCardInfo";
+import UserEditForm from "../UserEditForm/UserEditForm";
 
 const UserCard = ({isEditable}) => {
 	const dispatch = useDispatch();

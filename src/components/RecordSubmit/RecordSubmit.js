@@ -1,26 +1,30 @@
-import React, {useState} from 'react';
+import {useState} from 'react';
+import {useDispatch, useSelector} from "react-redux";
+
 import {Alert, Avatar, ListItem, ListItemAvatar, Stack, TextField, Typography} from "@mui/material";
 import Button from "@mui/material/Button";
-import LoadingButton from "@mui/lab/LoadingButton";
 import SendIcon from '@mui/icons-material/Send';
-import {useDispatch, useSelector} from "react-redux";
+import LoadingButton from "@mui/lab/LoadingButton";
+
 import {addRecordThunk} from "../../redux/records/recordsThunk";
 import {setNewRecordError} from "../../redux/records/recordsSlice";
 
 const RecordSubmit = () => {
-	const [focused, setFocused] = useState(false);
+	const dispatch = useDispatch();
 	const [content, setContent] = useState("");
-
+	const [focused, setFocused] = useState(false);
 	const {user} = useSelector((state) => state.auth);
 	const {newRecordLoading, newRecordError} = useSelector((state) => state.records);
-	const dispatch = useDispatch();
+
+	const helperText = newRecordError?.content && newRecordError?.content.charAt(0).toUpperCase() + newRecordError?.content.slice(1);
+	const avatarSrc = user?.image ? "/images/profile/" + user?.image : null;
 
 	const submitPost = () => {
 		dispatch(addRecordThunk({content}))
 			.then((action) => {
-				if (action.type == "records/add/fulfilled") {
-					setContent("");
+				if (action.type === "records/add/fulfilled") {
 					setFocused(false);
+					setContent("");
 				}
 			});
 	};
@@ -38,9 +42,9 @@ const RecordSubmit = () => {
 		dispatch(setNewRecordError(null));
 	};
 	const textareaOnChange = (event) => {
-		if (newRecordError) {
+		if (newRecordError)
 			dispatch(setNewRecordError(null));
-		}
+
 		setContent(event.target.value);
 	};
 
@@ -57,7 +61,7 @@ const RecordSubmit = () => {
 							style={{marginRight: 14, marginTop: -8}}
 							data-testid={"UserImage"}
 							sx={{width: 56, height: 56}}
-							src={user?.image && "/images/profile/" + user?.image}
+							src={avatarSrc}
 						/>
 					</ListItemAvatar>
 					<div style={{width: "100%"}}>
@@ -74,7 +78,7 @@ const RecordSubmit = () => {
 									height: focused ? "100px" : "26px",
 								}
 							}}
-							helperText={newRecordError?.content && newRecordError?.content.charAt(0).toUpperCase() + newRecordError?.content.slice(1)}
+							helperText={helperText}
 							error={!!newRecordError?.content}
 						/>
 						{typeof newRecordError === "string" &&

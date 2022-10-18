@@ -15,7 +15,7 @@ function UserPage() {
 	const params = useParams();
 	const dispatch = useDispatch();
 
-	const {user: loggedInUser} = useSelector((state) => state.auth);
+	const {user: loggedInUser, isLoggedIn} = useSelector((state) => state.auth);
 	const {userLoading, userLoadingError} = useSelector((state) => state.user);
 
 	useEffect(() => {
@@ -25,7 +25,7 @@ function UserPage() {
 		return () => {
 			dispatch(resetUserState());
 		}
-	}, [params?.username]);
+	}, [params?.username, dispatch]);
 
 	return (
 		<div className={"padding-md"} data-testid={"userpage"}>
@@ -47,7 +47,7 @@ function UserPage() {
 								userLoading ?
 									<UserCardSkeleton/>
 									:
-									<UserCard isEditable={params?.username === loggedInUser?.username}/>
+									<UserCard isEditable={params?.username === loggedInUser?.username && isLoggedIn}/>
 						}
 					</Grid>
 				</Grid>
