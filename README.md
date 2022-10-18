@@ -21,5 +21,5 @@ Educational project designed to develop Java, Spring, Spring Security skills and
 ## Stack:
 - Back-end: Java, Spring(web, security, data)
 - Testing: TDD, Junit5
-- Front-end: React, redux
+- Front-end: React, Redux (toolkit)
 - DB: H2
